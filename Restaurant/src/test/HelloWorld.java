@@ -6,8 +6,10 @@ public class HelloWorld {
 		System.out.print("hello world!!! adna here");
 		printrand();
 		System.out.print("Meow Meow Meow");
-		printrand();
-		
+		printrand();	
+		for(int i = 0; i<10;i++)
+			System.out.print("Meow Meow Meow");
+
 
 	}
 	public static void printrand(){
