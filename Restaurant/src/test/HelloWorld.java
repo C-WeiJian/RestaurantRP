@@ -3,7 +3,7 @@ package test;
 public class HelloWorld {
 
 	public static void main(String[] args) {
-		System.out.print("hello world!!! adna and junyu here");
+		System.out.print("hello world!!! adna and junyu and jx here");
 		printrand();
 		System.out.print("Meow Meow Meow");
 		printrand();	
