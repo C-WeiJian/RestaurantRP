@@ -1,22 +1,25 @@
 package rest;
 
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Map.Entry;
 import java.util.Scanner;
-import java.util.Calendar; //Use java.util.Calendar class if you need to extract year, month, day, hour, minute, and second, or manipulating these field (e.g., 7 days later, 3 weeks earlier).
-import java.text.DateFormat; //Use java.text.DateFormat to format a Date (form Date to text) and parse a date string (from text to Date). 
-import java.util.Date; //timestamp
 import java.util.Iterator;
 
 public class Order {
-	private Date date;
+	private LocalDateTime dateTime;
 	private OrderLineItem orders;
 	private double totalPrice;
 	private int orderId;
 	private int tableId;
+	private Staff staff;
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //format of time
 	
 	public Order() {
 		this.orders = new OrderLineItem();
+		this.dateTime = LocalDateTime.now();
 	}
 	
 	public double callBill() {
@@ -29,15 +32,14 @@ public class Order {
 		return bill;
 	}
 
-	public void addMenuItem() {
+	public void addMenuItem(Menu menu) {
 		Scanner in = new Scanner(System.in);
 		System.out.print("Enter item ID: ");
-		String itemId = in.nextLine();
+		String itemId = in.next();
 		System.out.print("Enter quantity: ");
 		int qty = in.nextInt();
 		MenuItem item = menu.getMenuItem(itemId);
-		
-		this.orders.addMenuItem(item, quantity);
+		this.orders.addMenuItem(item, qty);
 		System.out.println(item +" added!");
 	}
 	
@@ -46,15 +48,7 @@ public class Order {
 		System.out.println(item +" removed!");
 	}
 	
-	public int searchList(int itemId) {
-		Iterator<Order> ite = orderList.listIterator();
-		Order n = ite.next();
-		while (ite.hasNext() || n.getOrderId() != orderId) {
-			n = ite.next();
-		}
-		return orderList.indexOf(n);
-	}
-	
+
 	public int getOrderId() {
 		return orderId;
 	}
@@ -70,13 +64,31 @@ public class Order {
 	public void setTableId(int tableId) {
 		this.tableId = tableId;
 	}
-	
 
+	public Staff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(Staff staff) {
+		this.staff = staff;
+	}
 	
-//	public String getTime() {
-//		return time;
-//	}
-//	public void setTime(String time) {
-//		this.time = time;
-//	}
+	public OrderLineItem getOrders() {
+		return orders;
+	}
+	
+	public String getdateTime() {
+		return dateTime.format(formatter);
+	}
+	public void setdateTime(String time) {
+		this.dateTime = LocalDateTime.parse(time, formatter);
+	}
+	
+	public int getYear(){
+		return dateTime.getYear();
+	}
+	
+	public int getMonth(){
+		return dateTime.getMonthValue();
+	}
 }
