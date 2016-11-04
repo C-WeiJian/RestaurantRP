@@ -2,7 +2,8 @@ package rest;
 
 public class Table {
 	private int tableID;
-	private int capacity;
+	private int pax;
+	private int capacity;	//capacities of 2, 4, 6, 8, 10
 	private boolean status; //true means available
 	private Order order;
 	
@@ -35,6 +36,14 @@ public class Table {
 	}
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public int getPax() {
+		return pax;
+	}
+
+	public void setPax(int pax) {
+		this.pax = pax;
 	}
 	
 }

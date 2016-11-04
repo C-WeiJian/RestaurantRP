@@ -1,10 +1,15 @@
 package rest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Reservation {
 	private long custContact;
-	private int pax;
-	private int table;
-	private String[] session;
+	private int resPax;
+	private int tableNo;
+	private boolean AM = false, PM = false;
+	private LocalDateTime dateTime;
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //format of time
 	
 	public long getCustContact() {
 		return custContact;
@@ -13,22 +18,42 @@ public class Reservation {
 		this.custContact = custContact;
 	}
 	public int getPax() {
-		return pax;
+		return resPax;
 	}
 	public void setPax(int pax) {
-		this.pax = pax;
+		this.resPax = pax;
 	}
 	public int getTable() {
-		return table;
+		return tableNo;
 	}
 	public void setTable(int table) {
-		this.table = table;
+		this.tableNo = table;
 	}
-	public String[] getSession() {
-		return session;
-	}
-	public void setSession(String[] session) {
-		this.session = session;
+	public String getdateTime() {
+		return dateTime.format(formatter);
 	}
 	
+	public void setdateTime(String time) {
+		this.dateTime = LocalDateTime.parse(time, formatter);
+	}
+	
+	public int getHour(){
+		return dateTime.getHour();
+	}
+	
+	public int getMin(){
+		return dateTime.getMinute();
+	}
+	public boolean getAM() {
+		return AM;
+	}
+	public void setAM(boolean aM) {
+		AM = aM;
+	}
+	public boolean getPM() {
+		return PM;
+	}
+	public void setPM(boolean pM) {
+		PM = pM;
+	}
 }

@@ -29,7 +29,8 @@ public class PromoPackage extends MenuItem {
 		itemId = sc.nextLine();
 		for (MenuItem m : menu.getMenu()){
 			if(m.getId().equals(itemId)){
-				pItems.add(menu.getMenuItem(itemId));
+				pItems.add(m);
+				System.out.println("Item added");
 				break;
 			}
 		}

@@ -8,11 +8,11 @@ public class TableMgr {
 	private List<Table> tableList;
 
 	TableMgr() {
-		//tableList = loadTables();		//to initialize right at the start?
+		tableList = load();		//to initialize right at the start?
 	}
 
 	Scanner in = new Scanner(System.in);
-
+	
 	public void save() {
 		// save into txt file
 		System.out.println("Table successfully saved!");
@@ -25,7 +25,7 @@ public class TableMgr {
 	}
 	
 	// This is the only function you need to call in main app
-	public void checkAvailability() {	
+	public void checkAvailability() {
 		System.out.println("Please enter table ID:");
 		int tableId = in.nextInt();
 		int index = searchList(tableId);
@@ -56,16 +56,40 @@ public class TableMgr {
 		System.out.println("Table successfully removed!");
 	}
 
-	public int searchList(int TableId) {
+	public int searchList(int tableId) {
 		Iterator<Table> al = tableList.listIterator();
 		Table n = al.next();
-		while (al.hasNext() || n.getTableID() != TableId) {
+		while (al.hasNext() || n.getTableID() != tableId) {
 			n = al.next();
 		}
+		if(al.next() == null)
+			System.out.println("Not found!");
+		return tableList.indexOf(n);
+	}
+	public int searchListWithPax(int noPax) {
+		Iterator<Table> al = tableList.listIterator();
+		Table n = al.next();
+		while (al.hasNext() || n.getCapacity() >= noPax) {
+			if(n.getStatus() == true)
+				break;
+			else
+			n = al.next();
+		}
+		if(al.next() == null)
+			System.out.println("Not found!");
 		return tableList.indexOf(n);
 	}
 
 	public List<Table> getTableList() {
 		return tableList;
+	}
+	
+	public Table getTable(int tableId){
+		int index = searchList(tableId);
+		return getTableList().get(index);
+	}
+	
+	public void updateTable(int tableId, boolean status){
+		getTable(tableId).setStatus(status);
 	}
 }
