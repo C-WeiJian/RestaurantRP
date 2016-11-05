@@ -255,26 +255,27 @@ public class RestaurantApp {
 		do{
 			System.out.println("--------------------------");
 			System.out.println("For Maintenance Purposes");
-			System.out.println("1. Preset Table as required by Assignment");
-			System.out.println("2. Add Table");
-			System.out.println("3. Back");
+			System.out.println("1. Preset Menu as required by Assignment");
+			System.out.println("2. Preset Table as required by Assignment");
+			System.out.println("3. Add Table");
+			System.out.println("10. Back");
 			System.out.println("--------------------------");
 			
 			choice = sc.nextInt();
 			sc.nextLine();
 			
 			switch(choice){
-			case 1:
+			case 2:
 				tableMgr.presetTable();
 				tableMgr.saveTable();
 				break;
-			case 2:
+			case 3:
 				tableMgr.addTable();
 				break;
-			case 3:
+			case 10:
 				break;
 			}
-		} while (choice < 3);
+		} while (choice != 10);
 	}
 
 }
