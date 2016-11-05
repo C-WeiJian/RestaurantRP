@@ -2,9 +2,13 @@ package rest;
 
 import java.io.Serializable;
 
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 public class MenuItem implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String description;
 	private double price;

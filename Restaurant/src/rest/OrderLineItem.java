@@ -1,11 +1,19 @@
 package rest;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
 
-public class OrderLineItem {
+import java.io.Serializable;
+
+//@SuppressWarnings("serial")
+
+public class OrderLineItem implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private MenuItem item;
 	private int quantity;
 	

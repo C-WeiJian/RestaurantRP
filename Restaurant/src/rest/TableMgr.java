@@ -1,87 +1,134 @@
 package rest;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
 public class TableMgr {
-	private List<Table> tableList;
+	private static List<Table> tableList = new ArrayList<Table>();
 
-	TableMgr() {
-		tableList = load();		//to initialize right at the start?
+	public TableMgr() {
+		loadTable();
+	}
+	
+	public void loadTable(){
+		List list;
+		tableList = new ArrayList<Table>();
+		try	{
+			// read from serialized file the list of professors
+			list = (ArrayList)SerializeDB.readSerializedObject("tablelist.dat");
+			for (int i = 0 ; i < list.size() ; i++) {
+				Table m = (Table)list.get(i);
+//				tableList.add(new Table(m.getTableId(), m.getCapacity(), m.getStatus()));
+				tableList.add(m);
+			}
+		} catch ( Exception e ) {
+			System.out.println( "Exception >> " + e.getMessage() );
+		}
+	}
+	
+	public void saveTable(){
+		SerializeDB.writeSerializedObject("tablelist.dat", tableList);
+	}
+	
+	public void presetTable(){
+		tableList = new ArrayList<Table>();
+		for(int i = 0; i<10; i++){
+			tableList.add(new Table(i+1,2,true));
+		}
+		for(int i = 0; i<10; i++){
+			tableList.add(new Table(i+11,4,true));
+		}
+		for(int i = 0; i<5; i++){
+			tableList.add(new Table(i+21,8,true));
+		}
+		for(int i = 0; i<5; i++){
+			tableList.add(new Table(i+26,10,true));
+		}
 	}
 
 	Scanner in = new Scanner(System.in);
 	
-	public void save() {
-		// save into txt file
-		System.out.println("Table successfully saved!");
-	}
-
-	public List<Table> load() {
-		// Load txt file into tableList
-		System.out.println("Table successfully loaded!");
-		return tableList;
-	}
-	
 	// This is the only function you need to call in main app
-	public void checkAvailability() {
-		System.out.println("Please enter table ID:");
-		int tableId = in.nextInt();
-		int index = searchList(tableId);
-		Table result = tableList.get(index);
-		if (result.getStatus()) {
-			System.out.println("Table " + tableId + "is available for " + result.getCapacity());
-		} else
-			System.out.println("Table " + tableId + "is not available");
-	}
+//	public void checkAvailability() {
+//		System.out.println("Please enter table Id:");
+//		int tableId = in.nextInt();
+//		int index = searchList(tableId);
+//		Table result = tableList.get(index);
+//		if (result.getStatus()) {
+//			System.out.println("Table " + tableId + "is available for " + result.getCapacity());
+//		} else
+//			System.out.println("Table " + tableId + "is not available");
+//	}
 	//addTable and removeTable are used for 'admin' purposes when setting up the restaurant
-	public List<Table> addTable() {
-		System.out.println("Please enter table ID:");
+	
+	public void addTable() {
+		System.out.println("Please enter table Id:");
 		int tableId = in.nextInt();
 		System.out.println("Please enter table capacity:");
 		int capacity = in.nextInt();
-		System.out.println("Please enter table status:");
-		boolean status = in.nextBoolean();
-		Table newTable = new Table(tableId, capacity, status);
+//		System.out.println("Please enter table status:");
+//		boolean status = in.nextBoolean();
+		Table newTable = new Table(tableId, capacity, true);
 		tableList.add(newTable);
 		System.out.println("Table successfully added!");
-		return tableList;
+		saveTable();
 	}
 
 	public void removeTable() {
-		System.out.println("Please enter tableID:");
+		System.out.println("Please enter tableId:");
 		int index = searchList(in.nextInt());
 		tableList.remove(index);
 		System.out.println("Table successfully removed!");
 	}
+	
+	public void showTable() {
+		Iterator<Table> al = tableList.listIterator();
+		System.out.print("TableId\t\tCapacity\tStatus");
+		System.out.println();
+		while (al.hasNext()){
+			Table n = al.next();
+			System.out.print("Table" + n.getTableId() + "\t\t" + n.getCapacity() + " pax");
+			if(n.getStatus()) System.out.print("\t\tAvailable");
+			else System.out.print("\t\tUnavailable");
+			System.out.println();
+			
+		}
+	}
 
 	public int searchList(int tableId) {
 		Iterator<Table> al = tableList.listIterator();
-		Table n = al.next();
-		while (al.hasNext() || n.getTableID() != tableId) {
-			n = al.next();
+		while (al.hasNext()) {
+			Table n = al.next();
+			if(n.getTableId() == tableId)
+				return tableList.indexOf(n);
 		}
-		if(al.next() == null)
-			System.out.println("Not found!");
-		return tableList.indexOf(n);
+		System.out.println("Table not found!");
+		return -1;
 	}
-	public int searchListWithPax(int noPax) {
-		Iterator<Table> al = tableList.listIterator();
-		Table n = al.next();
-		while (al.hasNext() || n.getCapacity() >= noPax) {
-			if(n.getStatus() == true)
-				break;
-			else
-			n = al.next();
+	
+	public int nextavailableTable(int Pax) {
+		Iterator<Table> al = tableList.listIterator();	
+		while (al.hasNext()) {
+			Table n = al.next();
+			if(n.getStatus() == true && n.getCapacity() >= Pax)
+				return tableList.indexOf(n);
 		}
-		if(al.next() == null)
-			System.out.println("Not found!");
-		return tableList.indexOf(n);
+			return -1;
 	}
 
 	public List<Table> getTableList() {
 		return tableList;
+	}
+	
+	public int assignTable(int orderId, int pax){
+		int temp = nextavailableTable(pax);
+		if (temp == -1) return -1;
+		Table temptable = tableList.get(temp);
+		temptable.setorderId(orderId);
+		temptable.setStatus(false);
+		return temptable.getTableId();
 	}
 	
 	public Table getTable(int tableId){

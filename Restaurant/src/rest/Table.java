@@ -1,23 +1,32 @@
 package rest;
 
-public class Table {
-	private int tableID;
-	private int pax;
+import java.io.Serializable;
+
+//@SuppressWarnings("serial")
+
+public class Table implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int tableId;
+//	private int pax;
 	private int capacity;	//capacities of 2, 4, 6, 8, 10
 	private boolean status; //true means available
-	private Order order;
+	private int orderId;
 	
-	public Table(int tableID, int capacity, boolean status) {
-		this.tableID = tableID;
+	public Table(int tableId, int capacity, boolean status) {
+		this.tableId = tableId;
 		this.capacity = capacity;
 		this.status = status;
+		this.orderId = -1;
 	}
 	
-	public int getTableID() {
-		return tableID;
+	public int getTableId() {
+		return tableId;
 	}
-	public void setTableID(int tableID) {
-		this.tableID = tableID;
+	public void setTableId(int tableId) {
+		this.tableId = tableId;
 	}
 	public int getCapacity() {
 		return capacity;
@@ -31,19 +40,29 @@ public class Table {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	public Order getOrder() {
-		return order;
+	
+	public int getorderId() {
+		return orderId;
 	}
-	public void setOrder(Order order) {
-		this.order = order;
+	
+	public void setorderId(int orderId){
+		this.orderId = orderId;
 	}
-
-	public int getPax() {
-		return pax;
-	}
-
-	public void setPax(int pax) {
-		this.pax = pax;
-	}
+	
+//	public Order getOrder() {
+//		return order;
+//	}
+//	
+//	public void setOrder(Order order) {
+//		this.order = order;
+//	}
+//
+//	public int getPax() {
+//		return pax;
+//	}
+//
+//	public void setPax(int pax) {
+//		this.pax = pax;
+//	}
 	
 }

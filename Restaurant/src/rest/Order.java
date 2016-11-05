@@ -3,20 +3,26 @@ package rest;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
-import java.time.Month;
+//import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.Map.Entry;
-import java.util.Scanner;
+//import java.util.Map.Entry;
+//import java.util.Scanner;
 import java.util.Iterator;
+import java.io.Serializable;
 
-public class Order {
+//@SuppressWarnings("serial")
+public class Order implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private LocalDateTime dateTime;
 	private List<OrderLineItem> orders;
-	private double totalPrice;
+//	private double totalPrice;
 	private int orderId;
-	private int tableId;
-	private Staff staff;
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //format of time
+//	private int tableId;
+//	private Staff staff;
+
 	
 	public Order(int orderId) {
 		this.orders = new ArrayList<OrderLineItem>();
@@ -60,16 +66,15 @@ public class Order {
 			}
 		}
 		else {
-			orders.add(new OrderLineItem(item, quantity));
+			System.out.println("No changes made (Error: Item was not ordered at all).");
 		}
 	}
 	
 	public OrderLineItem checkItem(MenuItem item) {
 		Iterator<OrderLineItem> al = orders.listIterator();
-		OrderLineItem n;
 		while (al.hasNext()) {
-			n = al.next();
-			if (n.getMenuItem() == item) return n;
+			OrderLineItem n = al.next();
+			if (n.getMenuItem().getName().equals(item.getName())) return n;
 			
 		}
 		return null;
@@ -83,7 +88,7 @@ public class Order {
 		this.orderId = orderId;
 	}
 
-	public int getTableId() {
+/*	public int getTableId() {
 		return tableId;
 	}
 
@@ -97,18 +102,18 @@ public class Order {
 
 	public void setStaff(Staff staff) {
 		this.staff = staff;
-	}
+	}*/
 	
 	public List<OrderLineItem> getOrders() {
 		return orders;
 	}
 	
-	public String getdateTime() {
-		return dateTime.format(formatter);
+	public LocalDateTime getdateTime() {
+		return dateTime;
 	}
 	
-	public void setdateTime(String time) {
-		this.dateTime = LocalDateTime.parse(time, formatter);
+	public void setdateTime(LocalDateTime dateTime) {
+		this.dateTime = dateTime;
 	}
 	
 	public int getYear(){

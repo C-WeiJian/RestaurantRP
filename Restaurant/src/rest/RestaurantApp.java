@@ -16,11 +16,10 @@ public class RestaurantApp {
 	static Scanner sc = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//
-
 		menu.loadMenu();
 		
+		
+		System.out.println();
 		System.out.println("Welcome to the restaurant!");
 		do{
 			System.out.println("--------------------------");
@@ -35,7 +34,8 @@ public class RestaurantApp {
 			System.out.println("9. Check table availability");
 			System.out.println("10. Print order invoice");
 			System.out.println("11. Print sales revenue report by period (day/month)");
-			System.out.println("12. Exit");
+			System.out.println("12. Admin Features");
+			System.out.println("13. Exit");
 			System.out.println("--------------------------");
 			
 			choice = sc.nextInt();
@@ -51,17 +51,17 @@ public class RestaurantApp {
 				editPromo();
 				break;
 			case 4:
-				System.out.print("Enter OrderId: ");
-				int temporderId = sc.nextInt();
-				orderMgr.createOrder(temporderId);
+				createOrder();
+				orderMgr.saveOrder();
+				tableMgr.saveTable();
 				break;
 			case 5:
-				System.out.println("Please enter order ID: ");
-				int orderId = sc.nextInt();
-				orderMgr.print(orderId);
+				viewOrder();
 				break;
 			case 6:
 				editOrder();
+				orderMgr.saveOrder();
+				tableMgr.saveTable();
 				break;
 			case 7:
 				//resMgr.checkReservation();
@@ -70,14 +70,17 @@ public class RestaurantApp {
 				//resMgr.addReservation();
 				break;
 			case 9:
-				tableMgr.checkAvailability();
+				tableMgr.showTable(); //let status of table check the presence of order
 				break;
 			case 12:
+				admin();
+				break;
+			case 13:
 				System.out.println("Good Bye, See you again!");
 				continue;
 			}
 			
-		} while (choice != 10);
+		} while (choice != 13);
 
 	}
 	
@@ -157,12 +160,58 @@ public class RestaurantApp {
 		
 	}
 	
+	public static void createOrder(){
+		System.out.print("Enter OrderId: ");
+		int temporderId = sc.nextInt();
+		System.out.print("Enter Pax: ");
+		int temppax = sc.nextInt();
+		orderMgr.createOrder(temporderId);
+		int temptableid = tableMgr.assignTable(temporderId, temppax);
+		if (temptableid == -1) System.out.println("No Table Available");
+		else {
+			Table temptable = tableMgr.getTable(temptableid);
+			System.out.println("Order " + temporderId + " is assigned to Table " + temptable.getTableId());
+		}
+	}
+	
+	public static Order getOrder(){
+		int choice;
+		do{
+			System.out.println("--------------------------");
+			System.out.println("Choose Retrieval Method");
+			System.out.println("1. By Order ID");
+			System.out.println("2. By Table ID");
+			System.out.println("--------------------------");
+			
+			choice = sc.nextInt();
+			sc.nextLine();
+			
+			switch(choice){
+			case 1:
+				System.out.print("Please enter Order ID: ");
+				int orderId = sc.nextInt();
+				return orderMgr.getOrder(orderId);
+			case 2:
+				System.out.print("Please enter Table ID: ");
+				int tableId = sc.nextInt();
+				return orderMgr.getOrder(tableMgr.getTable(tableId).getorderId());
+			}
+		} while (choice < 3);
+		System.out.println("Order not Found");
+		return null;
+	}
+	
+	public static void viewOrder(){
+		Order order = getOrder();
+		orderMgr.print(order);
+	}
+	
 	public static void editOrder(){
 		int choice2, qty;
 		MenuItem temp;
 		String name;
-		System.out.println("Please enter order id: ");
-		int orderId = sc.nextInt();
+		
+		Order order = getOrder();
 		do{
 			System.out.println("--------------------------");
 			System.out.println("1. Add item to order");
@@ -181,16 +230,16 @@ public class RestaurantApp {
 				System.out.print("Enter Quantity: ");
 				qty = sc.nextInt();
 				temp = menu.getMenuItem(name);
-				orderMgr.getOrder(orderId).addMenuItem(temp, qty);
+				order.addMenuItem(temp, qty);
 				break;
 			case 2:
-				orderMgr.print(orderId);
+				orderMgr.print(order);
 				System.out.print("Enter Item Name or ID: ");
 				name = sc.nextLine();
 				System.out.print("Enter Quantity: ");
 				qty = sc.nextInt();
 				temp = menu.getMenuItem(name);
-				orderMgr.getOrder(orderId).removeMenuItem(temp, qty);
+				order.removeMenuItem(temp, qty);
 				break;
 			case 3:
 				System.out.println("Please Wait...");
@@ -201,5 +250,31 @@ public class RestaurantApp {
 		
 	}
 	
+	public static void admin(){
+		int choice;
+		do{
+			System.out.println("--------------------------");
+			System.out.println("For Maintenance Purposes");
+			System.out.println("1. Preset Table as required by Assignment");
+			System.out.println("2. Add Table");
+			System.out.println("3. Back");
+			System.out.println("--------------------------");
+			
+			choice = sc.nextInt();
+			sc.nextLine();
+			
+			switch(choice){
+			case 1:
+				tableMgr.presetTable();
+				tableMgr.saveTable();
+				break;
+			case 2:
+				tableMgr.addTable();
+				break;
+			case 3:
+				break;
+			}
+		} while (choice < 3);
+	}
 
 }

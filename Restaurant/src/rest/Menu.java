@@ -18,7 +18,8 @@ public class Menu {
 			list = (ArrayList)SerializeDB.readSerializedObject("menu.dat");
 			for (int i = 0 ; i < list.size() ; i++) {
 				MenuItem m = (MenuItem)list.get(i);
-				menu.add(new MenuItem(m.getName(), m.getDescription(), m.getPrice(), m.getType(), m.isPromo(), m.getId()));
+//				menu.add(new MenuItem(m.getName(), m.getDescription(), m.getPrice(), m.getType(), m.isPromo(), m.getId()));
+				menu.add(m);
 			}
 		} catch ( Exception e ) {
 			System.out.println( "Exception >> " + e.getMessage() );
