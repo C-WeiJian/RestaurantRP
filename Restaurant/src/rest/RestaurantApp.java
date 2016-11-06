@@ -36,7 +36,7 @@ public class RestaurantApp {
 			System.out.println("12. Admin Setup Features");
 			System.out.println("13. Exit");
 			System.out.println("--------------------------");
-
+			System.out.print("Enter choice: ");
 			choice = sc.nextInt();
 
 			switch (choice) {
@@ -51,16 +51,12 @@ public class RestaurantApp {
 				break;
 			case 4:
 				createOrder();
-				orderMgr.saveOrder();
-				tableMgr.saveTable();
 				break;
 			case 5:
 				viewOrder();
 				break;
 			case 6:
 				editOrder();
-				orderMgr.saveOrder();
-				tableMgr.saveTable();
 				break;
 			case 7:
 				// resMgr.checkReservation();
@@ -123,7 +119,7 @@ public class RestaurantApp {
 	}
 
 	public static void editPromo() {
-		int choice2;
+		int choice;
 		System.out.println("");
 		do {
 			System.out.println("--------------------------");
@@ -132,10 +128,10 @@ public class RestaurantApp {
 			System.out.println("3. Remove Promo Item");
 			System.out.println("4. Back");
 			System.out.println("--------------------------");
+			System.out.print("Enter choice: ");
+			choice = sc.nextInt();
 
-			choice2 = sc.nextInt();
-
-			switch (choice2) {
+			switch (choice) {
 			case 1:
 				menu.createPromo();
 				menu.saveMenu();
@@ -156,7 +152,7 @@ public class RestaurantApp {
 				continue;
 			}
 
-		} while (choice2 != 4);
+		} while (choice != 4);
 
 	}
 
@@ -183,7 +179,7 @@ public class RestaurantApp {
 			System.out.println("1. By Order ID");
 			System.out.println("2. By Table ID");
 			System.out.println("--------------------------");
-
+			System.out.print("Enter choice: ");
 			choice = sc.nextInt();
 			sc.nextLine();
 
@@ -192,10 +188,12 @@ public class RestaurantApp {
 				System.out.print("Please enter Order ID: ");
 				int orderId = sc.nextInt();
 				temporder = orderMgr.getOrder(orderId);
+				break;
 			case 2:
 				System.out.print("Please enter Table ID: ");
 				int tableId = sc.nextInt();
 				temporder = orderMgr.getOrder(tableMgr.getTable(tableId).getorderId());
+				break;
 			}	
 			if(temporder == null){
 				System.out.println("Order not Found");
@@ -215,7 +213,7 @@ public class RestaurantApp {
 	}
 
 	public static void editOrder() {
-		int choice2, qty;
+		int choice, qty;
 		MenuItem temp;
 		String name;
 
@@ -229,13 +227,12 @@ public class RestaurantApp {
 				System.out.println("2. Remove item from order");
 				System.out.println("3. Back");
 				System.out.println("--------------------------");
-
-				choice2 = sc.nextInt();
+				System.out.print("Enter choice: ");
+				choice = sc.nextInt();
 				sc.nextLine();
 
-				switch (choice2) {
+				switch (choice) {
 				case 1:
-
 					System.out.print("Enter Item Name or ID: ");
 					name = sc.nextLine();
 					System.out.print("Enter Quantity: ");
@@ -254,10 +251,11 @@ public class RestaurantApp {
 					break;
 				case 3:
 					System.out.println("Please Wait...");
+					orderMgr.saveOrder();
 					continue;
 				}
 
-			} while (choice2 != 3);
+			} while (choice != 3);
 		}
 	}
 
@@ -266,21 +264,29 @@ public class RestaurantApp {
 		do {
 			System.out.println("--------------------------");
 			System.out.println("For Setup Purposes");
-			System.out.println("1. Preset Menu as required by Assignment");
-			System.out.println("2. Preset Table as required by Assignment");
-			System.out.println("3. Add Table");
+			System.out.println("1. Full Preset");
+			System.out.println("2. Preset Menu as required by Assignment");
+			System.out.println("3. Preset Table as required by Assignment");
+			System.out.println("4. Preset Staff as required by Assignment");
+			System.out.println("5. Add Table");
 			System.out.println("10. Back");
 			System.out.println("--------------------------");
-
+			System.out.print("Enter choice: ");
 			choice = sc.nextInt();
 			sc.nextLine();
 
 			switch (choice) {
-			case 2:
+			case 1:
 				tableMgr.presetTable();
-				tableMgr.saveTable();
+				orderMgr.presetStaff();
 				break;
 			case 3:
+				tableMgr.presetTable();
+				break;
+			case 4:
+				orderMgr.presetStaff();
+				break;
+			case 5:
 				tableMgr.addTable();
 				break;
 			case 10:

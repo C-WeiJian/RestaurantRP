@@ -10,7 +10,7 @@ public class Menu {
 	private char section;
 	private static List<MenuItem> menu = new ArrayList<MenuItem>();
 	
-	public void loadMenu(){
+	public void loadMenu(){ //make this private
 		List list;
 		menu = new ArrayList<MenuItem>();
 		try	{
@@ -26,7 +26,7 @@ public class Menu {
 		}
 	}
 	
-	public void saveMenu(){
+	public void saveMenu(){ //make this private
 		SerializeDB.writeSerializedObject("menu.dat", menu);
 	}
 	

@@ -12,15 +12,13 @@ public class TableMgr {
 		loadTable();
 	}
 	
-	public void loadTable(){
+	private void loadTable(){
 		List list;
 		tableList = new ArrayList<Table>();
 		try	{
-			// read from serialized file the list of professors
 			list = (ArrayList)SerializeDB.readSerializedObject("tablelist.dat");
 			for (int i = 0 ; i < list.size() ; i++) {
 				Table m = (Table)list.get(i);
-//				tableList.add(new Table(m.getTableId(), m.getCapacity(), m.getStatus()));
 				tableList.add(m);
 			}
 		} catch ( Exception e ) {
@@ -28,7 +26,7 @@ public class TableMgr {
 		}
 	}
 	
-	public void saveTable(){
+	private void saveTable(){
 		SerializeDB.writeSerializedObject("tablelist.dat", tableList);
 	}
 	
@@ -46,6 +44,7 @@ public class TableMgr {
 		for(int i = 0; i<5; i++){
 			tableList.add(new Table(i+26,10,true));
 		}
+		saveTable();
 	}
 
 	Scanner in = new Scanner(System.in);
@@ -81,6 +80,7 @@ public class TableMgr {
 		int index = searchList(in.nextInt());
 		tableList.remove(index);
 		System.out.println("Table successfully removed!");
+		saveTable();
 	}
 	
 	public void showTable() {
@@ -128,6 +128,7 @@ public class TableMgr {
 		Table temptable = tableList.get(temp);
 		temptable.setorderId(orderId);
 		temptable.setStatus(false);
+		saveTable();
 		return temptable.getTableId();
 	}
 	
@@ -138,5 +139,6 @@ public class TableMgr {
 	
 	public void updateTable(int tableId, boolean status){
 		getTable(tableId).setStatus(status);
+		saveTable();
 	}
 }

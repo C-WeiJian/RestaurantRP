@@ -6,24 +6,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Map.Entry;
 
 public class OrderMgr {
 
 	private List<Order> orderList = new ArrayList<Order>();
+	private List<Staff> staffList = new ArrayList<Staff>();
 	Scanner in = new Scanner(System.in);
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //format of time
 	
 	public OrderMgr(){
 		loadOrder();
-		//orderList = new ArrayList<Order>();
+		loadStaff();
 	}
 	
 	public void loadOrder(){
 		List list;
 		orderList = new ArrayList<Order>();
 		try	{
-			// read from serialized file the list of professors
 			list = (ArrayList)SerializeDB.readSerializedObject("orderlist.dat");
 			for (int i = 0 ; i < list.size() ; i++) {
 				Order m = (Order)list.get(i);
@@ -34,8 +33,37 @@ public class OrderMgr {
 		}
 	}
 	
+	private void loadStaff(){
+		List list;
+		staffList = new ArrayList<Staff>();
+		try	{
+			// read from serialized file the list of professors
+			list = (ArrayList)SerializeDB.readSerializedObject("stafflist.dat");
+			for (int i = 0 ; i < list.size() ; i++) {
+				Staff m = (Staff)list.get(i);
+				staffList.add(m);
+			}
+		} catch ( Exception e ) {
+			System.out.println( "Exception >> " + e.getMessage() );
+		}
+	}
+	
 	public void saveOrder(){
 		SerializeDB.writeSerializedObject("orderlist.dat", orderList);
+	}
+	
+	private void saveStaff(){
+		SerializeDB.writeSerializedObject("stafflist.dat", staffList);
+	}
+	
+	public void presetStaff(){
+		staffList = new ArrayList<Staff>();
+		staffList.add(new Staff(1, "Steve Jobs", "Waiter", 'M'));
+		staffList.add(new Staff(2, "Bill Gates", "Waiter", 'M'));
+		staffList.add(new Staff(3, "Susan Wojcicki", "Chief Waiter", 'F'));
+		staffList.add(new Staff(4, "Barack Obama", "Assistant Manager", 'M'));
+		staffList.add(new Staff(5, "Michelle Obama", "Manager", 'F'));
+		saveStaff();
 	}
 	
 	public void createOrder(int orderId){
@@ -45,7 +73,7 @@ public class OrderMgr {
 //		newOrder.setTableId(tableId);
 //		//add orders to table
 		orderList.add(newOrder);
-		save();
+		saveOrder();
 	}
 	
 	public void removeOrder(){
@@ -55,7 +83,7 @@ public class OrderMgr {
 		int index = searchList(orderId);
 		orderList.remove(index);
 		System.out.println("Order successfully removed!");
-		save();
+		saveOrder();
 	}
 	
 /*	public void printInvoice(){
@@ -67,7 +95,6 @@ public class OrderMgr {
 	}*/
 	
 	public void printReport(){
-		save();
 		//print from txt file
 	}
 	public int searchList(int orderId) {
@@ -77,18 +104,11 @@ public class OrderMgr {
 			if(n.getOrderId() == orderId)
 				return orderList.indexOf(n);
 		}
-		System.out.println("Order not found!");
 		return -1;
 	}
 	
 	public List<Order> getOrderList() {
 		return orderList;
-	}
-	public void load(){
-		//load txt file
-	}
-	public void save(){
-		//save into txt file
 	}
 	
 	public Order getOrder(int orderId) {
