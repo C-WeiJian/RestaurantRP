@@ -10,12 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.io.Serializable;
 
-//@SuppressWarnings("serial")
+@SuppressWarnings("serial")
 public class Order implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
 	private LocalDateTime dateTime;
 	private List<OrderLineItem> orders;
 //	private double totalPrice;

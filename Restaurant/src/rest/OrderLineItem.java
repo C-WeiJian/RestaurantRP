@@ -6,14 +6,10 @@ package rest;
 
 import java.io.Serializable;
 
-//@SuppressWarnings("serial")
+@SuppressWarnings("serial")
 
 public class OrderLineItem implements Serializable{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private MenuItem item;
 	private int quantity;
 	

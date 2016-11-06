@@ -2,13 +2,10 @@ package rest;
 
 import java.io.Serializable;
 
-//@SuppressWarnings("serial")
+@SuppressWarnings("serial")
 
 public class Table implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
 	private int tableId;
 //	private int pax;
 	private int capacity;	//capacities of 2, 4, 6, 8, 10

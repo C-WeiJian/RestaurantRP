@@ -93,6 +93,7 @@ public class OrderMgr {
 	
 	public Order getOrder(int orderId) {
 		int index = searchList(orderId);
+		if (index == -1) return null;
 		return orderList.get(index);
 	}
 	
