@@ -8,13 +8,13 @@ public class Staff implements Serializable {
 
 	private String name, jobTitle;
 	private char gender;
-	private int employeeId;
+	private int staffId;
 
-	public Staff(int employeeId, String name, String jobTitle, char gender) {
+	public Staff(int staffId, String name, String jobTitle, char gender) {
 		this.gender = gender;
 		this.jobTitle = jobTitle;
 		this.name = name;
-		this.employeeId = employeeId;
+		this.staffId = staffId;
 	}
 
 	public String getName() {
@@ -41,11 +41,11 @@ public class Staff implements Serializable {
 		this.gender = gender;
 	}
 
-	public int getEmployeeId() {
-		return employeeId;
+	public int getStaffId() {
+		return staffId;
 	}
 
-	public void setEmployeeId(int employeeId) {
-		this.employeeId = employeeId;
+	public void setStaffId(int staffId) {
+		this.staffId = staffId;
 	}
 }

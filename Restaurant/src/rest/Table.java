@@ -7,8 +7,7 @@ import java.io.Serializable;
 public class Table implements Serializable {
 
 	private int tableId;
-//	private int pax;
-	private int capacity;	//capacities of 2, 4, 6, 8, 10
+	private int capacity;	//capacities of 2, 4, 8, 10
 	private boolean status; //true means available
 	private int orderId;
 	
@@ -45,21 +44,5 @@ public class Table implements Serializable {
 	public void setorderId(int orderId){
 		this.orderId = orderId;
 	}
-	
-//	public Order getOrder() {
-//		return order;
-//	}
-//	
-//	public void setOrder(Order order) {
-//		this.order = order;
-//	}
-//
-//	public int getPax() {
-//		return pax;
-//	}
-//
-//	public void setPax(int pax) {
-//		this.pax = pax;
-//	}
 	
 }

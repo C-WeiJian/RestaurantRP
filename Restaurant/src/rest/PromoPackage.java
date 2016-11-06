@@ -18,10 +18,10 @@ public class PromoPackage extends MenuItem {
 		String itemId;
 		System.out.println("Ala Carte Menu:");
 		System.out.println("---------------");
-		System.out.println("Name: \t\t\t\t Item ID:");		
+		System.out.printf("Name: %-20s ItemId:\n", " ");	
 		for (MenuItem m : menu.getMenu()){
 			if(m.isPromo() == false){
-				System.out.println(ala + ") " + m.getName() + "\t\t\t\t" + m.getId());
+				System.out.printf("%2d) %-22s %s\n", ala, m.getName(), m.getId());
 				ala++;
 			}
 		}
@@ -33,7 +33,13 @@ public class PromoPackage extends MenuItem {
 				System.out.println("Item added");
 				break;
 			}
+			else
+				System.out.println("Item does not exist!");
 		}
+	}
+	
+	public void addItem(MenuItem item){
+		pItems.add(item);
 	}
 	
 	public void removeItem(Menu menu){
@@ -42,18 +48,21 @@ public class PromoPackage extends MenuItem {
 		String itemId;
 		System.out.println("Promotion Menu:");
 		System.out.println("---------------");
-		System.out.println("Name: \t\t\t\t Item ID:");		
+		System.out.printf("Name: %-20s ItemId:\n", " ");	
 		for (MenuItem m : pItems){
 			if(m.isPromo() == false){
-				System.out.println(ala + ") " + m.getName() + "\t\t\t\t" + m.getId());
+				System.out.printf("%2d) %-22s %s\n", ala, m.getName(), m.getId());
 				ala++;
 			}
 		}
 		System.out.println("Choose MenuItem to Remove: ");
 		itemId = sc.nextLine();
 		for (MenuItem m : pItems){
-			if(m.getId().equals(itemId))
-				pItems.remove(m);	
+			if(m.getId().equals(itemId)){
+				pItems.remove(m);
+				System.out.println("Item Removed!");
+				break;
+			}
 			else
 				System.out.println("Item does not exist!");
 		}

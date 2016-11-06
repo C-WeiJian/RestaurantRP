@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 //import java.time.Month;
-import java.time.format.DateTimeFormatter;
-//import java.util.Map.Entry;
-//import java.util.Scanner;
+//import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.io.Serializable;
 
@@ -15,19 +13,24 @@ public class Order implements Serializable{
 
 	private LocalDateTime dateTime;
 	private List<OrderLineItem> orders;
-//	private double totalPrice;
+	private double subtotal;
+	private double svcharge;
+	private double gst;
+	private double total;
 	private int orderId;
-//	private int tableId;
-//	private Staff staff;
+	private int tableId;
+	private Staff staff;
 
 	
-	public Order(int orderId) {
+	public Order(int orderId, Staff staff, int tableId) {
 		this.orders = new ArrayList<OrderLineItem>();
 		this.dateTime = LocalDateTime.now();
 		this.orderId = orderId;
+		this.staff = staff;
+		this.tableId = tableId;
 	}
 	
-	public double callBill() {
+	private double calcBill() {
 		double bill = 0;	
 		for (OrderLineItem i : orders) {
 			bill += i.getMenuItem().getPrice() * i.getQuantity();
@@ -68,11 +71,8 @@ public class Order implements Serializable{
 	}
 	
 	public OrderLineItem checkItem(MenuItem item) {
-		Iterator<OrderLineItem> al = orders.listIterator();
-		while (al.hasNext()) {
-			OrderLineItem n = al.next();
-			if (n.getMenuItem().getName().equals(item.getName())) return n;
-			
+		for (OrderLineItem n : orders) {
+			if (n.getMenuItem().getName().equals(item.getName())) return n;	
 		}
 		return null;
 	}
@@ -85,13 +85,13 @@ public class Order implements Serializable{
 		this.orderId = orderId;
 	}
 
-/*	public int getTableId() {
+	public int getTableId() {
 		return tableId;
 	}
 
 	public void setTableId(int tableId) {
 		this.tableId = tableId;
-	}
+	} 
 
 	public Staff getStaff() {
 		return staff;
@@ -99,7 +99,7 @@ public class Order implements Serializable{
 
 	public void setStaff(Staff staff) {
 		this.staff = staff;
-	}*/
+	}
 	
 	public List<OrderLineItem> getOrders() {
 		return orders;
@@ -120,4 +120,41 @@ public class Order implements Serializable{
 	public int getMonth(){
 		return dateTime.getMonthValue();
 	}
+
+	public double getSubtotal() {
+		this.subtotal = calcBill();
+		return subtotal;
+	}
+
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
+	}
+
+	public double getSvcharge() {
+		svcharge = subtotal*0.1;
+		return svcharge;
+	}
+
+	public void setSvcharge(double svcharge) {
+		this.svcharge = svcharge;
+	}
+
+	public double getGst() {
+		gst = (subtotal + svcharge)*0.07;
+		return gst;
+	}
+
+	public void setGst(double gst) {
+		this.gst = gst;
+	}
+
+	public double getTotal() {
+		total = subtotal + svcharge + gst;
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+	
 }

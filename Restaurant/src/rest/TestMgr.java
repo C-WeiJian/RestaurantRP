@@ -1,18 +1,19 @@
 package rest;
 
+import java.util.Scanner;
+
 public class TestMgr {
 
 	public static void main(String[] args) {
-		System.out.printf("====================");
-		System.out.format("%n"+"%20s", "REstaurant");
-		System.out.format("%n%n");
-		System.out.format("%n%11s", "Order Id: ");
-		System.out.format("%n%20s", "datetime"); //Ask Weijian for code to print out date of system
-		System.out.format("%nWaiter: %12s", "Testing");
-		System.out.format("%nTable Id: %10s", "sampleId");
-		System.out.format("%n%n");
-		System.out.printf("--------------------");
+		System.out.println("Please enter the date which you wish to book: (dd-mm)");
+		Scanner in = new Scanner(System.in);
+				in.useDelimiter("-");
+				in.useDelimiter("\\n");
+		int day = in.nextInt();
+		int month = in.nextInt();
 		
+		System.out.println("day is " + day + "month is " + month);
+		in.close();
 	}
 
 }

@@ -4,56 +4,97 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+
+import javax.sound.midi.VoiceStatus;
 
 
 public class Menu {
 	private char section;
 	private static List<MenuItem> menu = new ArrayList<MenuItem>();
+
 	
-	public void loadMenu(){ //make this private
+	public void loadMenu(){
 		List list;
 		menu = new ArrayList<MenuItem>();
 		try	{
-			// read from serialized file the list of professors
 			list = (ArrayList)SerializeDB.readSerializedObject("menu.dat");
 			for (int i = 0 ; i < list.size() ; i++) {
-				MenuItem m = (MenuItem)list.get(i);
-//				menu.add(new MenuItem(m.getName(), m.getDescription(), m.getPrice(), m.getType(), m.isPromo(), m.getId()));
-				menu.add(m);
+				if (list.get(i) instanceof MenuItem){
+					MenuItem m = (MenuItem)list.get(i);
+					menu.add(m);
+				}
+				else if (list.get(i) instanceof PromoPackage){
+					System.out.println("I'm a PromoPackage");
+					PromoPackage p = (PromoPackage)list.get(i);
+					menu.add(p);
+				}
 			}
 		} catch ( Exception e ) {
 			System.out.println( "Exception >> " + e.getMessage() );
 		}
 	}
 	
-	public void saveMenu(){ //make this private
+	public void saveMenu(){
 		SerializeDB.writeSerializedObject("menu.dat", menu);
 	}
 	
 	public void showMenu(){
-		int promo = 1, ala = 1;
+		int promo = 1, main = 1, beverage = 1, desert = 1;
+		System.out.println("---------------------------------------");		
 		System.out.println("Promotion Menu:");
-		System.out.println("---------------");
-		System.out.printf("Name: %-20s Price:\n", " ");
-		//System.out.println("Name:\t\t\t\t Price:");
+		System.out.println("---------------------------------------");
+		System.out.printf("Name: %-20s Price: %2s ID: \n", " ", " ");
 		for (MenuItem m : menu){
 			if(m.isPromo() == true){
-				System.out.printf("%2d) %-22s $%.2f\n", promo, m.getName(), m.getPrice());
-				//System.out.println(promo + ") " + m.getName() + "\t\t\t\t" + m.getPrice());
-				System.out.println("   " + m.getDescription());
+				int n = 1;
+				System.out.printf("%2d) %-22s $%.2f %2s %3s\n", promo, m.getName(), m.getPrice(), " ", m.getId());
+				System.out.printf("%4s %-20s\n", " ", m.getDescription());
+				if (m instanceof PromoPackage){
+					//System.out.println("I'm a PromoPackage");
+					for(MenuItem i : ((PromoPackage)m).getpItems()){
+						System.out.printf("%4s (%d) %-20s\n", " ", n, i.getName());
+						n++;
+					}
+				}
+				else if (m instanceof MenuItem){
+					System.out.println(":(");
+				}
 				promo++;
 			}
 		}
+		System.out.println("---------------------------------------");
 		System.out.println("Ala Carte Menu:");
-		System.out.println("---------------");
-		System.out.printf("Name: %-20s Price:\n", " ");
-		//System.out.println("Name:\t\t\t\t Price:");		
+		System.out.println("---------------------------------------");
+		System.out.printf("Name: %-20s Price: %2s ID:\n", " ", " ");
+		System.out.println("Mains");
 		for (MenuItem m : menu){
 			if(m.isPromo() == false){
-				System.out.printf("%2d) %-22s $%.2f\n", ala, m.getName(), m.getPrice());
-				//System.out.println(ala + ") " + m.getName() + "\t\t\t\t" + m.getPrice());
-				System.out.println("\t" + m.getDescription());
-				ala++;
+				if(m.getType().equals("M")){
+					System.out.printf("%2d) %-22s $%4.2f %2s %3s\n", main, m.getName(), m.getPrice(), " ", m.getId());
+					System.out.printf("%4s %-20s\n", " ",  m.getDescription());
+					main++;
+				}
+			}
+		}
+		System.out.println("Beverages");
+		for (MenuItem m : menu){
+			if(m.isPromo() == false){
+				if(m.getType().equals("B")){
+					System.out.printf("%2d) %-22s $%.2f %7s\n", beverage, m.getName(), m.getPrice(), m.getId());
+					System.out.printf("%4s %-20s\n", " ",  m.getDescription());
+					main++;
+				}
+			}
+		}	
+		System.out.println("Deserts");
+		for (MenuItem m : menu){
+			if(m.isPromo() == false){
+				if(m.getType().equals("D")){
+					System.out.printf("%2d) %-22s $%.2f %7s\n", desert, m.getName(), m.getPrice(), m.getId());
+					System.out.printf("%4s %-20s\n", " ",  m.getDescription());
+					main++;
+				}
 			}
 		}	
 	}
@@ -74,18 +115,19 @@ public class Menu {
 		type = sc.nextLine();
 		System.out.println("ID of new MenuItem: ");
 		id = sc.nextLine();
-		MenuItem tempMItem = new MenuItem(name, description, price, type, false, type + id);		
+		MenuItem tempMItem = new MenuItem(name, description, price, type.toUpperCase(), false, type + id);
+		check(tempMItem);
 		menu.add(tempMItem);
 	}
 	
 	public void updateMenuItem(){
-		String input = "";
-		int choice = -1;
+		String input = "", temp;
+		int choice = -1, current = 0, previous;
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Which item do you want to edit?");
 		input = sc.nextLine();
 		for (MenuItem m : menu) {
-			if (m.getName().equals(input) || m.getId().equals(input)){
+			if (m.getName().equals(input) || m.getId().equals(input.toUpperCase())){
 				do{
 					System.out.println("What do you want to edit?");
 					System.out.println("1. Name");
@@ -100,7 +142,18 @@ public class Menu {
 					switch (choice){
 					case 1: 
 						System.out.println("Enter new name:");
-						m.setName(sc.nextLine());
+						temp = sc.nextLine();
+						do{
+							previous = current;
+							for(MenuItem n : menu){
+								if(n.getName().equals(temp)){
+									System.out.println("Name already exists, please enter a new name");
+									temp = sc.nextLine();
+									current++;
+								}
+							}
+						} while( previous != current);
+						m.setName(temp);
 						break;
 					case 2:
 						System.out.println("Enter new description:");
@@ -113,11 +166,23 @@ public class Menu {
 						break;
 					case 4:
 						System.out.println("Enter new Type:");
-						m.setType(sc.nextLine());
+						m.setType(sc.nextLine().toUpperCase());
+						m.setId(m.getType() + m.getId().substring(1));
 						break;
 					case 5:
 						System.out.println("Enter new ID:");
-						m.setId(m.getType() + sc.nextLine());
+						temp = m.getType() + sc.nextLine();
+						do{
+							previous = current;
+							for(MenuItem n : menu){
+								if(n.getName().equals(temp)){
+									System.out.println("ID already exists, please enter a new ID");
+									temp = m.getType() + sc.nextLine();
+									current++;
+								}
+							}
+						} while(previous != current);
+						m.setId(temp);
 						break;
 					case 6:
 						continue;
@@ -131,13 +196,14 @@ public class Menu {
 	}
 	
 	public void updatePromoItem(){
-		String input = "";
-		int choice = -1, choice2 = -1;
+		String input = "", temp = "";
+		int choice = -1, choice2 = -1, current = 0, previous;
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Which item do you want to edit?");
 		input = sc.nextLine();
 		for (Object m : menu) {
-			if (((MenuItem) m).getName().equals(input) || ((MenuItem) m).getId().equals(input)){
+			int i = 0;
+			if (((MenuItem) m).getName().equals(input) || ((MenuItem) m).getId().equals(input.toUpperCase())){
 				do{
 					System.out.println("What do you want to edit?");
 					System.out.println("1. Name");
@@ -153,7 +219,18 @@ public class Menu {
 					switch (choice){
 					case 1: 
 						System.out.println("Enter new name:");
-						((MenuItem) m).setName(sc.nextLine());
+						temp = sc.nextLine();
+						do{
+							previous = current;
+							for(MenuItem n : menu){
+								if((n.getName().equals(temp))){
+									System.out.println("Name already exists, please enter a new name");
+									temp = sc.nextLine();
+									current++;
+								}
+							}
+						} while( previous != current);
+						((MenuItem) m).setName(temp);
 						break;
 					case 2:
 						System.out.println("Enter new description:");
@@ -166,21 +243,33 @@ public class Menu {
 						break;
 					case 4:
 						System.out.println("Enter new Type:");
-						((MenuItem) m).setType(sc.nextLine());
+						((MenuItem) m).setType(sc.nextLine().toUpperCase());
 						break;
 					case 5:
 						System.out.println("Enter new ID:");
-						((MenuItem) m).setId(((MenuItem) m).getType() + sc.nextLine());
+						temp = ((MenuItem) m).getType() + sc.nextLine();
+						do{
+							previous = current;
+							for(MenuItem n : menu){
+								if(n.getName().equals(temp)){
+									System.out.println("ID already exists, please enter a new ID");
+									temp = ((MenuItem) m).getType() + sc.nextLine();
+									current++;
+								}
+							}
+						} while(previous != current);
+						((MenuItem) m).setId(temp);
 						break;
 					case 6:
 						do{
+							//PromoPackage tempPromo = (PromoPackage) getMenuItem(input);
 							System.out.println("1. Add new item");
-							System.out.println("2. Remve item");
+							System.out.println("2. Remove item");
 							System.out.println("3. Back");
 							choice2 = sc.nextInt();
-							sc.nextInt();
 							switch(choice2) {
 							case 1: 
+								//tempPromo.addItem(this);
 								((PromoPackage) m).addItem(this);
 								break;
 							case 2:
@@ -200,7 +289,8 @@ public class Menu {
 						break;
 					}
 				} while (choice != 7);
-			}
+				i++;
+			} else i++;
 		}	
 	}
 	
@@ -229,7 +319,8 @@ public class Menu {
 		sc.nextLine();
 		System.out.println("ID of new MenuItem: ");
 		id = sc.nextLine();
-		PromoPackage tempMPromo = new PromoPackage(name, description, price, "P", true, "P" + id);	
+		PromoPackage tempMPromo = new PromoPackage(name, description, price, "P", true, "P" + id);
+		check(tempMPromo);
 		do {
 			System.out.println("----------------------");
 			System.out.println("1. Add new item");
@@ -248,51 +339,48 @@ public class Menu {
 		}while (choice != 2);	
 		menu.add(tempMPromo);
 	}
-	
-	public void updatePromo(){
-		Scanner sc = new Scanner(System.in);
-		int choice = -1, promo = 1;
-		String promoId;
-		System.out.println("Promotion Menu:");
-		System.out.println("---------------");
-		System.out.println("Name:\t\t\t\t PromoId:");
-		for (MenuItem m : menu){
-			if(m.isPromo() == true){
-				System.out.println(promo + ") " + m.getName() + "\t\t\t\t" + m.getId());
-				System.out.println("   " + m.getDescription());
-				promo++;
-			}
-			else break;
-		}
-		System.out.println("PromoPackage ID to edit: ");
-		promoId = sc.nextLine();
-		PromoPackage tempPromo = (PromoPackage) getMenuItem(promoId);
-		do{
-			System.out.println("----------------------");
-			System.out.println("1. Add new item");
-			System.out.println("2. Remove item");
-			System.out.println("3. Done");
-			System.out.println("----------------------");
-			switch(choice){
-			case 1: 
-				tempPromo.addItem(this);
-				break;
-			case 2:
-				tempPromo.removeItem(this);
-				break;
-			case 3: 
-				continue;
-			}
-		}while(choice != 3);
-	}
-	
 	public MenuItem getMenuItem(String name){
 		for (MenuItem m : menu){
-			if (m.getName().equals(name) || m.getId().equals(name)){
+			if (m.getName().equals(name) || m.getId().equals(name.toUpperCase())){
 				return m;
 			}
 		}
 		return null;
+	}
+	
+	public void check(MenuItem tempMItem) {
+		checkName(tempMItem);
+		checkID(tempMItem);
+	}
+	
+	public void checkName(MenuItem tempMItem) {
+		int current = 0, previous;
+		Scanner sc = new Scanner(System.in);
+		do{
+			previous = current;
+			for (MenuItem m : menu){
+				if (m.getName().equals(tempMItem.getName())){
+					System.out.println("Item name already exists, please enter a new name:");
+					tempMItem.setName(sc.nextLine());
+					current++;
+				}
+			}
+		} while (previous != current);
+	}
+	
+	public void checkID(MenuItem tempMItem) {
+		int current = 0, previous;
+		Scanner sc = new Scanner(System.in);
+		do{
+			previous = current;
+			for (MenuItem m : menu){
+				if (m.getId().equals(tempMItem.getId())){
+					System.out.println("Item ID already exists, please enter a new ID:");
+					tempMItem.setId(tempMItem.getType() + sc.nextLine());
+					current++;
+				}
+			}
+		} while (previous != current);
 	}
 
 	public List<MenuItem> getMenu() {
@@ -301,5 +389,41 @@ public class Menu {
 
 	public void setMenu(List<MenuItem> menu) {
 		Menu.menu = menu;
+	}
+	
+	public void initDefaultMenu() {
+		menu = new ArrayList<MenuItem>();
+		
+		menu.add(new MenuItem("Steamed Chicken Rice", "Hainanese Steamed Chicken with Rice", 4.50, "M", false, "M01"));
+		menu.add(new MenuItem("Roasted Chicken Rice", "Roasted Chicken with Rice", 4.50, "M", false, "M02"));
+		menu.add(new MenuItem("Char Siew Rice", "Honey Glazed Roasted Pork with Rice", 4.00, "M", false, "M03"));
+		menu.add(new MenuItem("Roasted Pork Rice", "Crispy Roasted Pork with Rice", 4.00, "M", false, "M04"));
+		menu.add(new MenuItem("Bak Kut Teh", "Pork Rib Soup with Rice", 5.00, "M", false, "M05"));
+		
+		menu.add(new MenuItem("Canned Soft Drink", "Assorted Canned Drinks", 2.00, "B", false, "B01"));
+		menu.add(new MenuItem("Hot Tea", "Tea served with Sugar and Milk", 2.50, "B", false, "B02"));
+		menu.add(new MenuItem("Hot Coffee", "Coffee served with Sugar and Milk", 2.50, "B", false, "B03"));
+		menu.add(new MenuItem("Mango Juice", "Freshly Squeezed Manjo Juice", 3.00, "B", false, "B04"));
+		menu.add(new MenuItem("Watermelon Juice", "Freshly Squeezed Watermelon Juice", 2.50, "B", false, "B05"));
+		
+		menu.add(new MenuItem("Ice Cream", "Assorted Ice Cream Flavours", 4.00, "D", false, "D01"));
+		menu.add(new MenuItem("Mango Pudding", "Homemade Mango Pudding with Jelly", 4.50, "D", false, "D02"));
+		menu.add(new MenuItem("Mango Pudding", "Homemade Mango Pudding with Jelly", 4.50, "D", false, "D02"));
+		
+		PromoPackage temp = new PromoPackage("Lunch Set A", "Steamed Chicken Rice with Drink", 6.00, "P", true, "P01");
+		temp.addItem(getMenuItem("Steamed Chicken Rice"));
+		temp.addItem(getMenuItem("Canned Soft Drink"));
+		menu.add(temp);
+
+		temp = new PromoPackage("Lunch Set B", "Bak Kut Teh with Drink", 6.50, "P", true, "P02");
+		temp.addItem(getMenuItem("Bak Kut Teh"));
+		temp.addItem(getMenuItem("Canned Soft Drink"));
+		menu.add(temp);
+		
+		temp = new PromoPackage("Lunch Set C", "Char Siew Rice with Drink and Dessert", 8.00, "P", true, "P03");
+		temp.addItem(getMenuItem("Char Siew Rice"));
+		temp.addItem(getMenuItem("Canned Soft Drink"));
+		temp.addItem(getMenuItem("Ice Cream"));
+		menu.add(temp);
 	}
 }

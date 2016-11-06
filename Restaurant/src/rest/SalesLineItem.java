@@ -1,17 +1,20 @@
 package rest;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @SuppressWarnings("serial")
 
-public class OrderLineItem implements Serializable{
+public class SalesLineItem implements Serializable{
 	
 	private MenuItem item;
 	private int quantity;
-	
-	public OrderLineItem(MenuItem item, int quantity) {
+	private LocalDateTime dateTime;
+		
+	public SalesLineItem(MenuItem item, int quantity, LocalDateTime dateTime) {
 		this.item = item;
 		this.quantity = quantity;
+		this.dateTime = dateTime;
 	}
 	
 	public MenuItem getMenuItem() {
@@ -30,5 +33,11 @@ public class OrderLineItem implements Serializable{
 		this.quantity = quantity;
 	}
 
-	
+	public LocalDateTime getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(LocalDateTime dateTime) {
+		this.dateTime = dateTime;
+	}
 }

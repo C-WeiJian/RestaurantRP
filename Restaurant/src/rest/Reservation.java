@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 public class Reservation {
 	private long custContact;
 	private int resPax;
-	private int tableNo;
+	private int tableId;
 	private boolean AM = false, PM = false;
 	private LocalDateTime dateTime;
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //format of time
@@ -24,19 +24,26 @@ public class Reservation {
 		this.resPax = pax;
 	}
 	public int getTable() {
-		return tableNo;
+		return tableId;
 	}
 	public void setTable(int table) {
-		this.tableNo = table;
+		this.tableId = table;
 	}
-	public String getdateTime() {
+	public String getDateTime() {
 		return dateTime.format(formatter);
 	}
-	
-	public void setdateTime(String time) {
+	public LocalDateTime getLocalDateTime(){
+		return dateTime;
+	}
+	public void setDateTime(String time) {
 		this.dateTime = LocalDateTime.parse(time, formatter);
 	}
-	
+	public int getMonth(){
+		return dateTime.getMonthValue();
+	}
+	public int getDay(){
+		return dateTime.getDayOfMonth();
+	}
 	public int getHour(){
 		return dateTime.getHour();
 	}
@@ -55,5 +62,21 @@ public class Reservation {
 	}
 	public void setPM(boolean pM) {
 		PM = pM;
+	}
+	public boolean amSession(LocalDateTime bookingTime){
+		LocalDateTime amOpen = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 11, 00);
+		LocalDateTime amClose = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 15, 00);
+		if (bookingTime.isAfter(amOpen) && bookingTime.isBefore(amClose))
+			return true;
+		else 
+			return false;
+	}
+	public boolean pmSession(LocalDateTime bookingTime){
+	LocalDateTime pmOpen = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 18, 00);
+	LocalDateTime pmClose = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 22, 00);
+	if (bookingTime.isAfter(pmOpen) && bookingTime.isBefore(pmClose))
+		return true;
+	else 
+		return false;
 	}
 }
