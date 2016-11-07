@@ -62,12 +62,12 @@ public class RestaurantApp {
 				editOrder();
 				break;
 			case 7:
-				resMgr.checkReservation();
-				//updateRes() is called within checkReservation()
-				break;
-			case 8:
 				resMgr.addReservation();
 				// updateRes() is called within addReservation()
+				break;
+			case 8:
+				resMgr.checkReservation();
+				//updateRes() is called within checkReservation()
 				break;
 			case 9:
 				tableMgr.showTable(); // let status of table check the presence

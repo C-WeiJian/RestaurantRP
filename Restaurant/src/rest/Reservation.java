@@ -7,10 +7,19 @@ public class Reservation {
 	private long custContact;
 	private int resPax;
 	private int tableId;
-	private boolean AM = false, PM = false;
+	private boolean AM = false; //PM = false;
 	private LocalDateTime dateTime;
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //format of time
 	
+	public Reservation(int resPax, LocalDateTime dateTime, boolean AM, int tableId, long custContact) {
+		this.resPax = resPax;
+		this.dateTime = dateTime;
+		this.AM = AM;
+		this.tableId = tableId;
+		this.custContact = custContact;
+	}
+
+
 	public long getCustContact() {
 		return custContact;
 	}
@@ -57,26 +66,26 @@ public class Reservation {
 	public void setAM(boolean aM) {
 		AM = aM;
 	}
-	public boolean getPM() {
-		return PM;
-	}
-	public void setPM(boolean pM) {
-		PM = pM;
-	}
-	public boolean amSession(LocalDateTime bookingTime){
-		LocalDateTime amOpen = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 11, 00);
-		LocalDateTime amClose = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 15, 00);
-		if (bookingTime.isAfter(amOpen) && bookingTime.isBefore(amClose))
-			return true;
-		else 
-			return false;
-	}
-	public boolean pmSession(LocalDateTime bookingTime){
-	LocalDateTime pmOpen = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 18, 00);
-	LocalDateTime pmClose = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 22, 00);
-	if (bookingTime.isAfter(pmOpen) && bookingTime.isBefore(pmClose))
-		return true;
-	else 
-		return false;
-	}
+//	public boolean getPM() {
+//		return PM;
+//	}
+//	public void setPM(boolean pM) {
+//		PM = pM;
+//	}
+//	public boolean amSession(LocalDateTime bookingTime){
+//		LocalDateTime amOpen = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 11, 00);
+//		LocalDateTime amClose = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 15, 00);
+//		if (bookingTime.isAfter(amOpen) && bookingTime.isBefore(amClose))
+//			return true;
+//		else 
+//			return false;
+//	}
+//	public boolean pmSession(LocalDateTime bookingTime){
+//	LocalDateTime pmOpen = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 18, 00);
+//	LocalDateTime pmClose = LocalDateTime.of(bookingTime.getYear(), bookingTime.getMonthValue(), bookingTime.getDayOfMonth(), 22, 00);
+//	if (bookingTime.isAfter(pmOpen) && bookingTime.isBefore(pmClose))
+//		return true;
+//	else 
+//		return false;
+//	}
 }
