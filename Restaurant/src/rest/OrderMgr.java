@@ -12,14 +12,12 @@ public class OrderMgr {
 	private List<Order> orderList;
 	private List<Staff> staffList;
 	Scanner in = new Scanner(System.in);
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); // format
-	private SalesMgr salesMgr; // of
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); // format // of
 	// time
 
 	public OrderMgr() {
 		loadOrder();
 		loadStaff();
-		salesMgr = new SalesMgr();
 	}
 
 	public void loadOrder() {
@@ -95,7 +93,6 @@ public class OrderMgr {
 
 	public void printInvoice(Order order) {
 		print(order);
-		salesMgr.updateSales(order);
 		removeOrder(order);
 		saveOrder();
 	}
@@ -179,10 +176,6 @@ public class OrderMgr {
 
 	public void setdateTime(Order order, String time) {
 		order.setdateTime(LocalDateTime.parse(time, formatter));
-	}
-
-	public void printSales(String start, String end) {
-		salesMgr.printSales(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
 	}
 
 	public ArrayList<Integer> getUnavailableTables() {

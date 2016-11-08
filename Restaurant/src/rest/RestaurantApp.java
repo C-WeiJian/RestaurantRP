@@ -11,6 +11,7 @@ public class RestaurantApp {
 	public static OrderMgr orderMgr = new OrderMgr();
 	public static TableMgr tableMgr = new TableMgr();
 	public static ReservationMgr resMgr = new ReservationMgr();
+	public static SalesMgr salesMgr = new SalesMgr();
 	static int choice = -1;
 	static int choice2 = -1;
 	static String input;
@@ -243,6 +244,7 @@ public class RestaurantApp {
 		Order order = getOrder();
 		if (order != null) {
 			int temp = order.getTableId();
+			salesMgr.updateSales(order);
 			orderMgr.printInvoice(order);
 			tableMgr.updateTable(temp, true);
 		}
@@ -343,6 +345,10 @@ public class RestaurantApp {
 			choice = sc.nextInt();
 			sc.nextLine();
 
+			/*test cases of full reservation, releasing of table/s upon payment, removing
+			of reservation/s upon ‘period expiry’and generating of bill invoice.
+			maybe one to load multiple completed orders*/
+			
 			switch (choice) {
 			case 1:
 				tableMgr.presetTable();
@@ -351,6 +357,7 @@ public class RestaurantApp {
 				menu.initDefaultMenu();
 				menu.saveMenu();
 				resMgr.resetRes();
+				salesMgr.resetSales();
 				break;
 			case 2:
 				menu.initDefaultMenu();
@@ -382,7 +389,8 @@ public class RestaurantApp {
 		String start = sc.nextLine().substring(0, 10) + " 00:00";
 		System.out.print("Please enter end date (yyyy-MM-dd): ");
 		String end = sc.nextLine().substring(0, 10) + " 23:59";
-		orderMgr.printSales(start, end);
+		salesMgr.printSales(start, end);
 	}
+	
 
 }

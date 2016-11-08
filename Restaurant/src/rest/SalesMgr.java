@@ -15,10 +15,10 @@ public class SalesMgr {
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 	public SalesMgr() {
-		loadList();
+		loadSales();
 	}
 
-	public void loadList() {
+	public void loadSales() {
 		List list;
 		salesList = new ArrayList<SalesLineItem>();
 		try {
@@ -34,7 +34,7 @@ public class SalesMgr {
 		}
 	}
 
-	public void saveList() {
+	public void saveSales() {
 		SerializeDB.writeSerializedObject("saleslist.dat", salesList);
 	}
 
@@ -61,10 +61,14 @@ public class SalesMgr {
 				salesList.get(temp).setQuantity(newQuantity);
 			}
 		}
-		saveList();
+		saveSales();
 	}
 
-	public void printSales(LocalDateTime start, LocalDateTime end) {
+	public void printSales(String startstr, String endstr) {
+
+		LocalDateTime start = LocalDateTime.parse(startstr, formatter);
+		LocalDateTime end = LocalDateTime.parse(endstr, formatter);
+		
 		double totalEarnings = 0;
 		List<SalesLineItem> tempList = new ArrayList<SalesLineItem>();
 		HashMap<MenuItem,Integer> list = new HashMap<MenuItem,Integer>();
@@ -104,12 +108,8 @@ public class SalesMgr {
 		
 	}
 	
-
-	public String getdateTime(Order order) {
-		return order.getdateTime().format(formatter);
-	}
-
-	public void setdateTime(Order order, String time) {
-		order.setdateTime(LocalDateTime.parse(time, formatter));
+	public void resetSales(){
+		salesList = new ArrayList<SalesLineItem>();
+		saveSales();
 	}
 }
