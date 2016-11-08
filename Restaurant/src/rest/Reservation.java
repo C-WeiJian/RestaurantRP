@@ -1,9 +1,12 @@
 package rest;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Reservation {
+@SuppressWarnings("serial")
+
+public class Reservation implements Serializable {
 	private long custContact;
 	private int resPax;
 	private int tableId;
