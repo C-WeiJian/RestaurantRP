@@ -2,6 +2,7 @@
 
 package rest;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class RestaurantApp {
@@ -16,8 +17,10 @@ public class RestaurantApp {
 	static Scanner sc = new Scanner(System.in);
 
 	public static void main(String[] args) {
+		// Initialize menu
 		menu.loadMenu();
 
+		// Print main menu
 		System.out.println();
 		System.out.println("Welcome to the restaurant!");
 		do {
@@ -32,7 +35,7 @@ public class RestaurantApp {
 			System.out.println("8. Check/Remove reservation booking");
 			System.out.println("9. Check table availability");
 			System.out.println("10. Print order invoice");
-			System.out.println("11. Print sales revenue report by period (day/month)");
+			System.out.println("11. Print sales revenue report by period");
 			System.out.println("12. Admin Setup Features");
 			System.out.println("13. Exit");
 			System.out.println("---------------------------------------");
@@ -51,30 +54,42 @@ public class RestaurantApp {
 				break;
 			case 4:
 				resMgr.updateRes();
+				updateTables();
 				createOrder();
 				break;
 			case 5:
 				resMgr.updateRes();
+				updateTables();
 				viewOrder();
 				break;
 			case 6:
 				resMgr.updateRes();
+				updateTables();
 				editOrder();
 				break;
 			case 7:
 				resMgr.addReservation();
 				// updateRes() is called within addReservation()
+				updateTables();
 				break;
 			case 8:
-				resMgr.checkReservation();
-				//updateRes() is called within checkReservation()
+				editReservation();
+				// updateRes() is called within checkReservation() and removeReservation() in ReservationMgr
+				updateTables();
 				break;
 			case 9:
+				resMgr.updateRes();
+				updateTables();
 				tableMgr.showTable(); // let status of table check the presence
-										// of order
 				break;
 			case 10:
+				sc.nextLine();
 				printInvoice();
+				break;
+			case 11:
+				sc.nextLine();
+				printSales();
+				break;
 			case 12:
 				admin();
 				break;
@@ -164,6 +179,7 @@ public class RestaurantApp {
 	}
 
 	public static void createOrder() {
+		resMgr.updateRes();
 		System.out.print("Enter OrderId: ");
 		int temporderId = sc.nextInt();
 		System.out.print("Enter Pax: ");
@@ -177,6 +193,7 @@ public class RestaurantApp {
 			boolean check = orderMgr.createOrder(temporderId, staffid, temptableid);
 			if (check == true)
 				System.out.println("Order Created!\nOrder " + temporderId + " is assigned to Table " + temptableid);
+			else tableMgr.updateTable(temptableid, true);
 		}
 	}
 
@@ -224,8 +241,12 @@ public class RestaurantApp {
 
 	public static void printInvoice() {
 		Order order = getOrder();
-		if (order != null)
+		if (order != null) {
+			int temp = order.getTableId();
 			orderMgr.printInvoice(order);
+			tableMgr.updateTable(temp, true);
+		}
+
 	}
 
 	public static void editOrder() {
@@ -241,7 +262,7 @@ public class RestaurantApp {
 				System.out.println("--------------------------");
 				System.out.println("1. Add item to order");
 				System.out.println("2. Remove item from order");
-				System.out.println("3. Delete/Remove Order");
+				System.out.println("3. Delete/Remove entire Order");
 				System.out.println("4. Back");
 				System.out.println("--------------------------");
 				System.out.print("Enter choice: ");
@@ -250,6 +271,7 @@ public class RestaurantApp {
 
 				switch (choice) {
 				case 1:
+					menu.showSimpleMenu();
 					System.out.print("Enter Item Name or ID: ");
 					name = sc.nextLine();
 					System.out.print("Enter Quantity: ");
@@ -268,6 +290,9 @@ public class RestaurantApp {
 					break;
 				case 3:
 					orderMgr.removeOrder(order);
+					int temp2 = order.getTableId();
+					tableMgr.updateTable(temp2, true);
+					break;
 				case 4:
 					System.out.println("Please Wait...");
 					orderMgr.saveOrder();
@@ -276,6 +301,30 @@ public class RestaurantApp {
 
 			} while (choice != 4);
 		}
+	}
+	
+	public static void editReservation() {
+		int choice;
+		do {
+			System.out.println("--------------------------");
+			System.out.println("1: Check reservation");
+			System.out.println("2: Remove reservation");
+			System.out.println("3: Back");
+			System.out.println("--------------------------");
+			
+			choice = sc.nextInt();
+			
+			switch(choice) {
+			case 1:
+				resMgr.checkReservation();
+				break;
+			case 2:
+				resMgr.removeReservation();
+				break;
+			case 3:
+				break;
+			}
+		} while (choice !=3);
 	}
 
 	public static void admin() {
@@ -298,8 +347,10 @@ public class RestaurantApp {
 			case 1:
 				tableMgr.presetTable();
 				orderMgr.presetStaff();
+				orderMgr.resetallOrder();
 				menu.initDefaultMenu();
 				menu.saveMenu();
+				resMgr.resetRes();
 				break;
 			case 2:
 				menu.initDefaultMenu();
@@ -318,6 +369,20 @@ public class RestaurantApp {
 				break;
 			}
 		} while (choice != 10);
+	}
+
+	public static void updateTables() {
+		ArrayList<Integer> temp = resMgr.getUnavailableTables(); // get tableId
+		tableMgr.updateRes(temp);
+	}
+
+	public static void printSales() {
+
+		System.out.print("Please enter start date (yyyy-MM-dd): ");
+		String start = sc.nextLine().substring(0, 10) + " 00:00";
+		System.out.print("Please enter end date (yyyy-MM-dd): ");
+		String end = sc.nextLine().substring(0, 10) + " 23:59";
+		orderMgr.printSales(start, end);
 	}
 
 }

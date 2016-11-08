@@ -36,7 +36,7 @@ public class ReservationMgr {
 		SerializeDB.writeSerializedObject("reservationlist.dat", resList);
 	}
 	
-	public List<Reservation> addReservation() {
+	public void addReservation() {
 		updateRes(); //to clear any expired reservations first
 		String dateTime;
 		LocalDateTime t;
@@ -61,14 +61,13 @@ public class ReservationMgr {
 			else if (t.isBefore(LocalDateTime.now())) {
 				System.out.println("You are trying to reserve a time in the past. Try again.");
 			}
-			else break;
-			
+			else break;			
 		}
 
 		int a = t.getHour();
-		while (!(a >= 11 && a < 15) || (a >= 18 && a < 22)) { //getting correct time
+		while (a<11 || a>21 || (a>14 && a<18)) { //getting correct time
 			System.out.println("Opening hours are 1100-1500 and 1800-2200.");
-			System.out.println("Please enter new timing: ");
+			System.out.println("Please enter new timing (HH:MM): ");
 			String time = in.nextLine();
 			String[] separated = time.split(":");
 			a = Integer.parseInt(separated[0]);
@@ -81,74 +80,50 @@ public class ReservationMgr {
 		if (tableId != -1) {
 			System.out.println("Please enter cust contact:");
 			long custCont = in.nextLong();
-			Reservation res = new Reservation(pax, t, AM, tableId, custCont);
+			Reservation res = new Reservation(pax, t.format(formatter), AM, tableId, custCont);
 			resList.add(res);
 			saveReservations();
 			System.out.println("Reservation successfully added for "+pax+" people on "+t.format(formatter)+" at table "+tableId+"!");
-			return resList;
 		}
 		else {
 			System.out.println("No vacancies, sorry.");
-			return null;
 		}
-		
-		
-		//PREVIOUS CODE
-		/*
-		while (count == 0) {
-			while(AM == false && PM == false) {
-				while(month == false) {
-					System.out.println("Please enter date and time of reservation: (yyyy-mm-dd HH:mm)");
-					dateTime = in.next();
-					temp.setDateTime(dateTime);
-					month = LocalDateTime.parse(dateTime).isAfter(LocalDateTime.now().plusMonths(1));	//true means reservation not valid
-					if (month = true){		//checks 1 month condition
-						System.out.println("You cannot reserve a date later than one month from now!");
-						break;
-					}
-				} 
-				AM = temp.amSession(temp.getLocalDateTime());
-				PM = temp.pmSession(temp.getLocalDateTime());
-				if (AM == false && PM == false){		//checks opening hours
-					System.out.println("Restaurant opening hours: 1100 - 1500 AND 1800 - 2200"); 
-					break;
-				}
-			}
-			noRes = searchResListWithDateTime(temp);
-			count = tables - noRes;
-			if(count == 0) {											// checks if there are available tables
-				System.out.println("No Reservation available!");
-				System.out.println("Press any key to continue or press -1 to exit reservation booking");
-				if (in.nextInt() == -1)
-					return resList;
-			}
-		}
-		*/
-		//from this line onwards, means that the reservation is ok
-//		temp.setAM(AM);
-//		temp.setPM(PM);
-//		temp.setPax(pax);													// sets pax for reservation
-//		tableIndex = RestaurantApp.tableMgr.nextAvailableTable(temp.getPax());						//finds index of available table in tableList
-//		temp.setTable(RestaurantApp.tableMgr.getTableList().get(tableIndex).getTableId());		//adds TableId to reservation
-//		RestaurantApp.tableMgr.getTableList().get(tableIndex).setStatus(false);				//Sets Table as reserved
-//		System.out.println("Please enter cust contact:");
-//		temp.setCustContact(in.nextLong());
-//		System.out.println("Reservation successfully added!");
-//		resList.add(temp);
-//		return resList;
 	}
 	
 	
 	public void removeReservation(){
+		updateRes();
+		if (resList.size() == 0) {
+			System.out.println("No reservations have been made yet.");
+			return;
+		}
 		System.out.println("Please enter contact no:");
 		long contno = in.nextLong();
-		int index = searchResList(contno);
-		if (index == -1) {
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
+		indexList = searchResList(contno);
+		//int index = searchResList(contno);
+		if (indexList.size() == 0) {
 			System.out.println("Error - reservation not found.");
 			return;
 		}
 		else {
-			resList.remove(index);
+			if (indexList.size() > 1) {
+				System.out.println("You have "+indexList.size()+" reservations.");
+				int count = 1;
+				for (Integer i : indexList) {
+					Reservation temp = resList.get(i);
+					System.out.println("Reservation "+count+":");
+					System.out.println("Time of reservation: " + temp.getDateTime());
+					System.out.println("Reserved for: " + temp.getPax() + " people");
+					System.out.println("Table no: " + temp.getTableId());
+					count++;
+				}
+				System.out.println("Which reservation do you want to remove?");
+				int choice = in.nextInt();
+				resList.remove(indexList.get(choice-1));
+				saveReservations();
+			}
+			resList.remove(indexList.get(0));
 			saveReservations();
 			System.out.println("Reservation successfully removed!");
 		}
@@ -162,76 +137,60 @@ public class ReservationMgr {
 		}
 		System.out.println("Please enter contact no:");
 		long contno = in.nextLong();
-		int index = searchResList(contno);
-		if (index == -1) {
+		ArrayList<Integer> indexList = searchResList(contno);
+		//int index = searchResList(contno);
+		if (indexList.size() == 0) {
 			System.out.println("Error - reservation not found.");
 			return;
 		}
 		else {
-			Reservation temp = resList.get(index);
-			System.out.println("Your reservation is on the " + temp.getDateTime());
-			System.out.println("Reserved for " + temp.getPax() + " people");
-			System.out.println("Table no: " + temp.getTable());
-		}
-	}
-	
-	public int searchResList(long contno) {
-		for (Reservation r : resList) {
-			if (r.getCustContact() == contno) {
-				return resList.indexOf(r);
+			System.out.println("You have "+indexList.size()+" reservation(s):");
+			for (Integer i : indexList) {
+				Reservation temp = resList.get(i);
+				System.out.println("Time of reservation: " + temp.getDateTime());
+				System.out.println("Reserved for: " + temp.getPax() + " people");
+				System.out.println("Table no: " + temp.getTableId());
 			}
 		}
-		return -1;
 	}
 	
-//	public int searchTableList(int pax){
-//		Iterator<Table> al = RestaurantApp.tableMgr.getTableList().listIterator();
-//		int noTables = 0;
-//		while (al.hasNext()){
-//			Table n = al.next();
-//			if (n.getCapacity()>=pax)
-//				noTables++;
-//		}
-//		return noTables;
-//	}
-	
-//	public int searchResListWithDateTime(Reservation temp){
-//		int noRes = 0;
-//		int hour = temp.getHour();
-//	
-//		for (Reservation n : resList) {	
-//			if(n.getPax() >= temp.getPax()){
-//				if(n.getMonth() == temp.getMonth())
-//					if(n.getDay() == temp.getDay()){
-//						if (11 <= hour && hour < 15){
-//							if(n.getAM() == true)
-//								{noRes++;}}
-//							else if (18 <= hour && hour < 22)
-//								if (n.getPM() == true)
-//									noRes++;
-//				}
-//			}
-//		}
-//		return noRes;
-//	}
+	public ArrayList<Integer> searchResList(long contno) {
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
+		for (Reservation r : resList) {
+			if (r.getCustContact() == contno) {
+				indexList.add(resList.indexOf(r));
+			}
+		}
+		return indexList;
+	}
 	
 	public int checkAvailability(int pax, LocalDateTime t, boolean AM) { //returns tableId if available
 		List<Table> tempTableList = RestaurantApp.tableMgr.getTableList();
-		for (Table table : tempTableList) {
-			table.setStatus(false);
+		LocalDateTime now = LocalDateTime.now();
+		boolean AMnow;
+		if (now.getHour() < 12) AMnow = true;
+		else AMnow = false;
+		
+		if (t.truncatedTo(ChronoUnit.DAYS).isAfter(now) || AM!=AMnow) { //if reservation is not for the current session
+			for (Table table : tempTableList) {
+				table.setStatus(true);
+			}
 		}
-		for (Reservation r : resList) {
-			if (r.getLocalDateTime().truncatedTo(ChronoUnit.DAYS) == t.truncatedTo(ChronoUnit.DAYS) && r.getAM() == AM) {
+		
+		for (Reservation r : resList) { //set status of tables correctly based on reservations
+			if (LocalDateTime.parse(r.getDateTime(),formatter).truncatedTo(ChronoUnit.DAYS).equals(t.truncatedTo(ChronoUnit.DAYS)) && r.getAM() == AM) {
 				for (Table table : tempTableList) {
-					if (table.getTableId() == r.getTable()) {
-						table.setStatus(true);
+					if (table.getTableId() == r.getTableId()) {
+						System.out.println("taken");
+						table.setStatus(false);
 						break;
 					}
 				}
 			}
 		}
+		
 		for (Table table : tempTableList) {
-			if (!table.getStatus() && table.getCapacity() >= pax) {
+			if (table.getStatus() && table.getCapacity() >= pax) {
 				return table.getTableId();
 			}
 		}
@@ -239,11 +198,35 @@ public class ReservationMgr {
 	}
 	
 	public void updateRes() {
+		LocalDateTime now = LocalDateTime.now();		
 		for (Reservation r : resList) {
-			if (r.getLocalDateTime().isBefore(LocalDateTime.now().plusMinutes(30))) {
+			if (LocalDateTime.parse(r.getDateTime(),formatter).isBefore(now.plusMinutes(30))) {
 				resList.remove(r);
 				System.out.println("Reservation by customer with contact number " + r.getCustContact() + " has been automatically removed");
 			}
 		}
+		saveReservations();
+	}
+	
+	public ArrayList<Integer> getUnavailableTables() { //returns tableIds of reserved tables for the session
+		ArrayList<Integer> reserved = new ArrayList<Integer>();
+		LocalDateTime now = LocalDateTime.now();
+		boolean AM;
+		if (now.getHour() < 12) AM = true;
+		else AM = false;
+		for (Reservation r : resList) {
+			if (LocalDateTime.parse(r.getDateTime(),formatter).truncatedTo(ChronoUnit.DAYS).equals(now.truncatedTo(ChronoUnit.DAYS)) && r.getAM() == AM) {
+				reserved.add(r.getTableId());
+			}
+		}
+		return reserved;
+	}
+	
+	public List<Reservation> getReservations() {
+		return this.resList;
+	}
+	
+	public void resetRes(){
+		resList = new ArrayList<Reservation>();
 	}
 }

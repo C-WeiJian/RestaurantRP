@@ -10,13 +10,20 @@ public class SalesLineItem implements Serializable{
 	private MenuItem item;
 	private int quantity;
 	private LocalDateTime dateTime;
+	private double totalPrice;
 		
 	public SalesLineItem(MenuItem item, int quantity, LocalDateTime dateTime) {
 		this.item = item;
 		this.quantity = quantity;
 		this.dateTime = dateTime;
+		this.totalPrice = 0;
 	}
 	
+	public double getTotalPrice() {
+		totalPrice = item.getPrice()*quantity;
+		return totalPrice;
+	}
+
 	public MenuItem getMenuItem() {
 		return this.item;
 	}

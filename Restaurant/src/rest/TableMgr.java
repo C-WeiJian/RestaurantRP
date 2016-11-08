@@ -129,7 +129,7 @@ public class TableMgr {
 			return -1;
 		Table temptable = tableList.get(temp);
 		temptable.setorderId(orderId);
-		temptable.setStatus(false);
+		temptable.setStatus(false); //can remove
 		saveTable();
 		return temptable.getTableId();
 	}
@@ -141,6 +141,16 @@ public class TableMgr {
 
 	public void updateTable(int tableId, boolean status) {
 		getTable(tableId).setStatus(status);
+		if(status) getTable(tableId).setorderId(-1);
 		saveTable();
+	}
+	
+	public void updateRes (ArrayList<Integer> res){
+		for (Table t: tableList){
+			if(t.getorderId() == -1) t.setStatus(true);
+		}
+		for (Integer t: res){
+			updateTable(t, false);
+		}
 	}
 }

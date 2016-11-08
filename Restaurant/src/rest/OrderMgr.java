@@ -13,12 +13,13 @@ public class OrderMgr {
 	private List<Staff> staffList;
 	Scanner in = new Scanner(System.in);
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); // format
-																							// of
-																							// time
+	private SalesMgr salesMgr; // of
+	// time
 
 	public OrderMgr() {
 		loadOrder();
 		loadStaff();
+		salesMgr = new SalesMgr();
 	}
 
 	public void loadOrder() {
@@ -94,6 +95,7 @@ public class OrderMgr {
 
 	public void printInvoice(Order order) {
 		print(order);
+		salesMgr.updateSales(order);
 		removeOrder(order);
 		saveOrder();
 	}
@@ -139,7 +141,7 @@ public class OrderMgr {
 		System.out.printf("===============================\n");
 		System.out.printf("\n");
 		System.out.printf("%21s\n", "Order Id: " + order.getOrderId());
-		System.out.printf("%22s\n", "Table Id: " + order.getTableId());
+		System.out.printf("%21s\n", "Table Id: " + order.getTableId());
 		System.out.format("%24s", getdateTime(order));
 		System.out.printf("\n\n");
 		System.out.printf("%21s\n", "Served By: " + order.getStaff().getName());
@@ -177,6 +179,23 @@ public class OrderMgr {
 
 	public void setdateTime(Order order, String time) {
 		order.setdateTime(LocalDateTime.parse(time, formatter));
+	}
+
+	public void printSales(String start, String end) {
+		salesMgr.printSales(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
+	}
+
+	public ArrayList<Integer> getUnavailableTables() {
+		ArrayList<Integer> templist = new ArrayList<Integer>();
+		for (Order o : orderList) {
+			templist.add(o.getTableId());
+		}
+		return templist;
+	}
+	
+	public void resetallOrder() {
+		orderList = new ArrayList<Order>();
+		saveOrder();
 	}
 
 }

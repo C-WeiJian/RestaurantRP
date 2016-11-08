@@ -13,7 +13,7 @@ public class Menu {
 	private char section;
 	private static List<MenuItem> menu = new ArrayList<MenuItem>();
 
-	
+	//Loads menu from menu.dat file
 	public void loadMenu(){
 		List list;
 		menu = new ArrayList<MenuItem>();
@@ -35,10 +35,12 @@ public class Menu {
 		}
 	}
 	
+	//writes current menu to menu.dat
 	public void saveMenu(){
 		SerializeDB.writeSerializedObject("menu.dat", menu);
 	}
 	
+	//prints menu split by type
 	public void showMenu(){
 		int promo = 1, main = 1, beverage = 1, desert = 1;
 		System.out.println("---------------------------------------");		
@@ -48,7 +50,7 @@ public class Menu {
 		for (MenuItem m : menu){
 			if(m.isPromo() == true){
 				int n = 1;
-				System.out.printf("%2d) %-22s $%.2f %2s %3s\n", promo, m.getName(), m.getPrice(), " ", m.getId());
+				System.out.printf("%2d) %-22s $%.2f %3s %3s\n", promo, m.getName(), m.getPrice(), " ", m.getId());
 				System.out.printf("%4s %-20s\n", " ", m.getDescription());
 				if (m instanceof PromoPackage){
 					//System.out.println("I'm a PromoPackage");
@@ -71,7 +73,7 @@ public class Menu {
 		for (MenuItem m : menu){
 			if(m.isPromo() == false){
 				if(m.getType().equals("M")){
-					System.out.printf("%2d) %-22s $%4.2f %2s %3s\n", main, m.getName(), m.getPrice(), " ", m.getId());
+					System.out.printf("%2d) %-22s $%4.2f %3s %3s\n", main, m.getName(), m.getPrice(), " ", m.getId());
 					System.out.printf("%4s %-20s\n", " ",  m.getDescription());
 					main++;
 				}
@@ -83,7 +85,7 @@ public class Menu {
 				if(m.getType().equals("B")){
 					System.out.printf("%2d) %-22s $%.2f %7s\n", beverage, m.getName(), m.getPrice(), m.getId());
 					System.out.printf("%4s %-20s\n", " ",  m.getDescription());
-					main++;
+					beverage++;
 				}
 			}
 		}	
@@ -93,12 +95,15 @@ public class Menu {
 				if(m.getType().equals("D")){
 					System.out.printf("%2d) %-22s $%.2f %7s\n", desert, m.getName(), m.getPrice(), m.getId());
 					System.out.printf("%4s %-20s\n", " ",  m.getDescription());
-					main++;
+					desert++;
 				}
 			}
 		}	
 	}
 	
+	
+	
+	//Creates a new menu item and adds it to the menu
 	public void createMenuItem(){
 		Scanner sc = new Scanner(System.in);
 		String name, description, type, id;
@@ -120,6 +125,7 @@ public class Menu {
 		menu.add(tempMItem);
 	}
 	
+	//Allows users to update a certain menu item
 	public void updateMenuItem(){
 		String input = "", temp;
 		int choice = -1, current = 0, previous;
@@ -199,6 +205,7 @@ public class Menu {
 		String input = "", temp = "";
 		int choice = -1, choice2 = -1, current = 0, previous;
 		Scanner sc = new Scanner(System.in);
+		showPromo();
 		System.out.println("Which item do you want to edit?");
 		input = sc.nextLine();
 		for (Object m : menu) {
@@ -382,6 +389,33 @@ public class Menu {
 			}
 		} while (previous != current);
 	}
+	
+	public void showAlaCarte() {
+		System.out.println("Ala Carte Menu:");
+		System.out.println("---------------");
+		System.out.printf("Name: %-20s ItemId:\n", " ");	
+		for (MenuItem m : menu){
+			if(m.isPromo() == false){
+				System.out.printf("%-26s %s\n", m.getName(), m.getId());
+			}
+		}
+	}
+	
+	public void showPromo() {
+		System.out.println("Promotion Menu:");
+		System.out.println("---------------");
+		System.out.printf("Name: %-20s ItemId:\n", " ");	
+		for (MenuItem m : menu){
+			if(m.isPromo() == true){
+				System.out.printf("%-26s %s\n", m.getName(), m.getId());
+			}
+		}
+	}
+	
+	public void showSimpleMenu() {
+		showPromo();
+		showAlaCarte();
+	}
 
 	public List<MenuItem> getMenu() {
 		return menu;
@@ -408,7 +442,7 @@ public class Menu {
 		
 		menu.add(new MenuItem("Ice Cream", "Assorted Ice Cream Flavours", 4.00, "D", false, "D01"));
 		menu.add(new MenuItem("Mango Pudding", "Homemade Mango Pudding with Jelly", 4.50, "D", false, "D02"));
-		menu.add(new MenuItem("Mango Pudding", "Homemade Mango Pudding with Jelly", 4.50, "D", false, "D02"));
+		menu.add(new MenuItem("Strawberry Shortcake", "Cream filled cake with Strawberry", 4.50, "D", false, "D03"));
 		
 		PromoPackage temp = new PromoPackage("Lunch Set A", "Steamed Chicken Rice with Drink", 6.00, "P", true, "P01");
 		temp.addItem(getMenuItem("Steamed Chicken Rice"));
