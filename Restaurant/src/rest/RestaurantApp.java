@@ -335,10 +335,11 @@ public class RestaurantApp {
 			System.out.println("--------------------------");
 			System.out.println("For Setup Purposes");
 			System.out.println("1. Full Preset");
-			System.out.println("2. Preset Menu as required by Assignment");
-			System.out.println("3. Preset Table as required by Assignment");
-			System.out.println("4. Preset Staff as required by Assignment");
-			System.out.println("5. Add Table");
+			System.out.println("2. Test Case - Full Reservation");
+			System.out.println("3. Test Case - Load Multiple Completed and Active Orders");
+			System.out.println("4. Preset Default Menu");
+			System.out.println("5. Preset Default Tables of 30 ");
+			System.out.println("6. Add a Single Table");
 			System.out.println("10. Back");
 			System.out.println("--------------------------");
 			System.out.print("Enter choice: ");
@@ -359,17 +360,14 @@ public class RestaurantApp {
 				resMgr.resetRes();
 				salesMgr.resetSales();
 				break;
-			case 2:
+			case 4:
 				menu.initDefaultMenu();
 				menu.saveMenu();
 				break;
-			case 3:
+			case 5:
 				tableMgr.presetTable();
 				break;
-			case 4:
-				orderMgr.presetStaff();
-				break;
-			case 5:
+			case 6:
 				tableMgr.addTable();
 				break;
 			case 10:
