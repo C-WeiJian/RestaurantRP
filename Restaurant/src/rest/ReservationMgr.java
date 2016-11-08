@@ -15,7 +15,25 @@ public class ReservationMgr {
 	Scanner in = new Scanner(System.in);
 	
 	public ReservationMgr(){
+		loadReservations();
+	}
+	
+	private void loadReservations() {
+		List list;
 		resList = new ArrayList<Reservation>();
+		try {
+			list = (ArrayList) SerializeDB.readSerializedObject("reservationlist.dat");
+			for (int i = 0; i < list.size(); i++) {
+				Reservation m = (Reservation) list.get(i);
+				resList.add(m);
+			}
+		} catch (Exception e) {
+			System.out.println("Exception >> " + e.getMessage());
+		}
+	}
+	
+	private void saveReservations() {
+		SerializeDB.writeSerializedObject("reservationlist.dat", resList);
 	}
 	
 	public List<Reservation> addReservation() {
@@ -65,6 +83,7 @@ public class ReservationMgr {
 			long custCont = in.nextLong();
 			Reservation res = new Reservation(pax, t, AM, tableId, custCont);
 			resList.add(res);
+			saveReservations();
 			System.out.println("Reservation successfully added for "+pax+" people on "+t.format(formatter)+" at table "+tableId+"!");
 			return resList;
 		}
@@ -123,10 +142,16 @@ public class ReservationMgr {
 	public void removeReservation(){
 		System.out.println("Please enter contact no:");
 		long contno = in.nextLong();
-		resList.remove(searchResList(contno));
-		if (searchResList(contno) == -1)
+		int index = searchResList(contno);
+		if (index == -1) {
+			System.out.println("Error - reservation not found.");
 			return;
-		System.out.println("Reservation successfully removed!");
+		}
+		else {
+			resList.remove(index);
+			saveReservations();
+			System.out.println("Reservation successfully removed!");
+		}
 	}
 	
 	public void checkReservation(){
@@ -137,25 +162,26 @@ public class ReservationMgr {
 		}
 		System.out.println("Please enter contact no:");
 		long contno = in.nextLong();
-		Reservation temp = resList.get(searchResList(contno));
-		if (temp == null)
+		int index = searchResList(contno);
+		if (index == -1) {
+			System.out.println("Error - reservation not found.");
 			return;
-		System.out.println("Your reservation is on the " + temp.getDateTime());
-		System.out.println("Reserved for " + temp.getPax() + " people");
-		System.out.println("Table no: " + temp.getTable());
+		}
+		else {
+			Reservation temp = resList.get(index);
+			System.out.println("Your reservation is on the " + temp.getDateTime());
+			System.out.println("Reserved for " + temp.getPax() + " people");
+			System.out.println("Table no: " + temp.getTable());
+		}
 	}
 	
 	public int searchResList(long contno) {
-		Iterator<Reservation> al = resList.listIterator();
-		Reservation n = al.next();
-		while (al.hasNext() || n.getCustContact() != contno) {
-			n = al.next();
-		}
-		if(al.next() == null){
-			System.out.println("Not found!");
-			return -1;
+		for (Reservation r : resList) {
+			if (r.getCustContact() == contno) {
+				return resList.indexOf(r);
 			}
-		return resList.indexOf(n);
+		}
+		return -1;
 	}
 	
 //	public int searchTableList(int pax){
@@ -196,9 +222,7 @@ public class ReservationMgr {
 		}
 		for (Reservation r : resList) {
 			if (r.getLocalDateTime().truncatedTo(ChronoUnit.DAYS) == t.truncatedTo(ChronoUnit.DAYS) && r.getAM() == AM) {
-				Iterator <Table> al = tempTableList.listIterator();
-				while (al.hasNext()) {
-					Table table = al.next();
+				for (Table table : tempTableList) {
 					if (table.getTableId() == r.getTable()) {
 						table.setStatus(true);
 						break;
