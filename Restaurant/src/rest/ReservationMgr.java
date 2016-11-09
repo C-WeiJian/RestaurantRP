@@ -101,7 +101,6 @@ public class ReservationMgr {
 		long contno = in.nextLong();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		indexList = searchResList(contno);
-		//int index = searchResList(contno);
 		if (indexList.size() == 0) {
 			System.out.println("Error - reservation not found.");
 			return;
@@ -116,16 +115,22 @@ public class ReservationMgr {
 					System.out.println("Time of reservation: " + temp.getDateTime());
 					System.out.println("Reserved for: " + temp.getPax() + " people");
 					System.out.println("Table no: " + temp.getTableId());
+					System.out.println("--------------------------");
 					count++;
 				}
 				System.out.println("Which reservation do you want to remove?");
 				int choice = in.nextInt();
-				resList.remove(indexList.get(choice-1));
+				int index = indexList.get(choice-1);
+				resList.remove(index);
 				saveReservations();
+				System.out.println("Reservation successfully removed!");
 			}
-			resList.remove(indexList.get(0));
-			saveReservations();
-			System.out.println("Reservation successfully removed!");
+			else {
+				int index = indexList.get(0);
+				resList.remove(index);
+				saveReservations();
+				System.out.println("Reservation successfully removed!");
+			}
 		}
 	}
 	
@@ -138,7 +143,6 @@ public class ReservationMgr {
 		System.out.println("Please enter contact no:");
 		long contno = in.nextLong();
 		ArrayList<Integer> indexList = searchResList(contno);
-		//int index = searchResList(contno);
 		if (indexList.size() == 0) {
 			System.out.println("Error - reservation not found.");
 			return;
@@ -150,11 +154,12 @@ public class ReservationMgr {
 				System.out.println("Time of reservation: " + temp.getDateTime());
 				System.out.println("Reserved for: " + temp.getPax() + " people");
 				System.out.println("Table no: " + temp.getTableId());
+				System.out.println("--------------------------");
 			}
 		}
 	}
 	
-	public ArrayList<Integer> searchResList(long contno) {
+	public ArrayList<Integer> searchResList(long contno) { //returns ArrayList of reservation indices in case the same person has more than one reservation
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		for (Reservation r : resList) {
 			if (r.getCustContact() == contno) {
@@ -181,7 +186,6 @@ public class ReservationMgr {
 			if (LocalDateTime.parse(r.getDateTime(),formatter).truncatedTo(ChronoUnit.DAYS).equals(t.truncatedTo(ChronoUnit.DAYS)) && r.getAM() == AM) {
 				for (Table table : tempTableList) {
 					if (table.getTableId() == r.getTableId()) {
-						System.out.println("taken");
 						table.setStatus(false);
 						break;
 					}
