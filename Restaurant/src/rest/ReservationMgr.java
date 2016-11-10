@@ -204,7 +204,7 @@ public class ReservationMgr {
 	public void updateRes() {
 		LocalDateTime now = LocalDateTime.now();		
 		for (Reservation r : resList) {
-			if (LocalDateTime.parse(r.getDateTime(),formatter).isBefore(now.plusMinutes(30))) {
+			if (LocalDateTime.parse(r.getDateTime(),formatter).isBefore(now.minusMinutes(30))) {
 				resList.remove(r);
 				System.out.println("Reservation by customer with contact number " + r.getCustContact() + " has been automatically removed");
 			}
