@@ -410,7 +410,9 @@ public class RestaurantApp {
 	}
 
 	/**
-	 * Admin menu functions.
+	 * Admin menu functions. 
+	 * This is used to automatically set up the required situations and conditions to realise the test cases specified by the assignment.
+	 * This function is also essential in initialising the default settings of the restaurant. 
 	 */
 	public static void admin() {
 		int choice;
@@ -424,6 +426,7 @@ public class RestaurantApp {
 			System.out.println("5. Preset Default Tables of 30 ");
 			System.out.println("6. Add a Single Table");
 			System.out.println("7. See All Reservations");
+			System.out.println("7. Reset and Remove All Orders");
 			System.out.println("10. Back");
 			System.out.println("--------------------------");
 			System.out.print("Enter choice: ");

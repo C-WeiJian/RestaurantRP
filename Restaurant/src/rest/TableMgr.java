@@ -5,9 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class TableMgr.
+ * The Class TableMgr. This class manages and control the tables of the restaurant
  */
 public class TableMgr {
 	
@@ -65,11 +64,11 @@ public class TableMgr {
 		saveTable();
 	}
 
-	/** The scaner. */
+	/** The scanner. */
 	Scanner in = new Scanner(System.in);
 
 	/**
-	 * Adds the table.
+	 * Adds a table.
 	 */
 	public void addTable() {
 		System.out.println("Please enter table Id:");
@@ -83,7 +82,7 @@ public class TableMgr {
 	}
 
 	/**
-	 * Removes the table.
+	 * Removes a table.
 	 */
 	public void removeTable() {
 		System.out.println("Please enter tableId:");
@@ -95,6 +94,7 @@ public class TableMgr {
 
 	/**
 	 * Show table.
+	 * This is done by iterating through the tableList and retrieving the relevant information
 	 */
 	public void showTable() {
 		System.out.print("TableId\t\tCapacity\tStatus\n");
@@ -114,6 +114,8 @@ public class TableMgr {
 
 	/**
 	 * Search tableList using tableID.
+	 * 
+	 * Iterates through the tableList and return the index of the table specified by the parameter
 	 *
 	 * @param tableId the table id
 	 * @return the index of the desired table in tableList
@@ -192,7 +194,6 @@ public class TableMgr {
 	 *
 	 * @param tableId the table id
 	 * @param status the status
-	 * @param orderId the orderId
 	 */
 	public void updateTable(int tableId, int status, int orderId) {
 		Table temp = getTable(tableId);
@@ -208,7 +209,7 @@ public class TableMgr {
 	 * Subsequently, it marks the relevant tables as reserved(status == 0) as per ArrayList res.
 	 *
 	 * @param res List of Integer containing the tableId of reservation for current session
-	 * @param ord List of Integer containing the tableId and orderid of current orders 
+	 * @param res List of Integer containing the tableId of current orders
 	 */
 	public void fullUpdate (ArrayList<Integer> res, ArrayList<Integer[]> ord){
 		

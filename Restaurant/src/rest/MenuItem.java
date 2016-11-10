@@ -82,7 +82,7 @@ public class MenuItem implements Serializable{
 	/**
 	 * Sets the description of this MenuItem.
 	 *
-	 * @param description the description
+	 * @param description
 	 */
 	public void setDescription(String description) {
 		this.description = description;

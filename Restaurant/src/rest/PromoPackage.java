@@ -1,6 +1,5 @@
 package rest;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,6 +7,7 @@ import java.util.Scanner;
 /**
  * Represents a PromoPackage item in the menu.
  */
+@SuppressWarnings("serial")
 public class PromoPackage extends MenuItem {
 	
 	/** The list of MenuItems. */

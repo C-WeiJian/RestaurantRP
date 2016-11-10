@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ReservationMgr.
+ * Creates a list of Reservations
  * @version 1.0
  * @since 2016-10-28
  */
@@ -26,14 +26,14 @@ public class ReservationMgr {
 	Scanner in = new Scanner(System.in);
 	
 	/**
-	 * Instantiates a new reservation mgr.
+	 * Instantiates a new reservation manager.
 	 */
 	public ReservationMgr(){
 		loadReservations();
 	}
 	
 	/**
-	 * Load reservations.
+	 * Loads latest version of reservations.
 	 */
 	private void loadReservations() {
 		List list;
@@ -58,7 +58,8 @@ public class ReservationMgr {
 	
 	/**
 	 * Adds the reservation.
-	 * 
+	 * It will check for pax number, date, and then time
+	 * It is also able to identify which component of the user's input is not appropriate
 	 * @param temptablelist the list of tables
 	 */
 	public void addReservation(ArrayList<Table> temptablelist) {
@@ -118,6 +119,8 @@ public class ReservationMgr {
 	
 	/**
 	 * Removes the reservation.
+	 * Creates a temp ArrayList to check if user has more than 1 reservation made under the same contact number
+	 * Allows user to decide which reservation to remove
 	 */
 	public void removeReservation(){
 		updateRes();
@@ -171,6 +174,7 @@ public class ReservationMgr {
 	
 	/**
 	 * Check reservation.
+	 * Creates a temp ArrayList to check if user has more than 1 reservation made under the same contact number
 	 */
 	public void checkReservation(){
 		updateRes();
@@ -200,8 +204,7 @@ public class ReservationMgr {
 	}
 	
 	/**
-	 * Search reservation list.
-	 *
+	 * Search reservation list using contact number as an identifier
 	 * @param contno the contact number
 	 * @return the array list of reservation indices in resList
 	 */
@@ -223,7 +226,7 @@ public class ReservationMgr {
 	 * @param AM the boolean identifying whether it is AM or PM
 	 * @param tempTableList the list of table
 	 * @return the tableID of available table
-	 * -1 if no tables are available
+	 * @return -1 if no tables are available
 	 */
 	public int checkAvailability(int pax, LocalDateTime t, boolean AM, ArrayList<Table> tempTableList) { 
 		//List<Table> tempTableList = templist;
@@ -259,6 +262,7 @@ public class ReservationMgr {
 	
 	/**
 	 * Update reservation List.
+	 * Checks and removes any reservations that are already 30 minutes past their indicated timing
 	 */
 	public void updateRes() {
 		LocalDateTime now = LocalDateTime.now();
@@ -278,8 +282,8 @@ public class ReservationMgr {
 	
 	/**
 	 * Gets the unavailable tables.
-	 *
-	 * @return the IDs of unavailable tables
+	 * Creates an ArrayList of Integers to store the tableIds of reserved tables
+	 * @return the List of reserved tables
 	 */
 	public ArrayList<Integer> getUnavailableTables() { 
 		ArrayList<Integer> reserved = new ArrayList<Integer>();
@@ -294,7 +298,7 @@ public class ReservationMgr {
 	/**
 	 * Gets the reservations.
 	 *
-	 * @return the reservations
+	 * @return the reservationsList
 	 */
 	public List<Reservation> getReservations() {
 		return this.resList;
@@ -308,7 +312,7 @@ public class ReservationMgr {
 	}
 	
 	/**
-	 * Gets the reservations made by the customer.
+	 * Gets the reservations already made by the customer.
 	 *
 	 * @param contno the contno
 	 * @return the reservations by the customer
@@ -325,8 +329,10 @@ public class ReservationMgr {
 	
 	/**
 	 * Activate reservation.
-	 *
-	 * @return the int
+	 * Checks the reservation and converts it to become an order
+	 * Allows the 'reserved' table to become 'occupied'
+	 * Removes the reservation and updates the list
+	 * @return the tableId of table that was reserved
 	 */
 	public int activateReservation() {
 		int tableId = -1;
@@ -364,7 +370,6 @@ public class ReservationMgr {
 	
 	/**
 	 * Checks if is current session.
-	 *
 	 * @param r the reservation to be checked
 	 * @return true, if is current session
 	 */
@@ -397,7 +402,7 @@ public class ReservationMgr {
 	}
 	
 	/**
-	 * Initialize full reservation of tables.
+	 * Initialize test case of full reservation of tables.
 	 * @param temptablelist the list of tables
 	 */
 	public void initializeFullReservation (ArrayList<Table> temptablelist){

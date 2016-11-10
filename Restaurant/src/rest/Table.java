@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class Table.
+ * Represents a Table
  */
 @SuppressWarnings("serial")
 
