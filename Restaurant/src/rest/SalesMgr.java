@@ -56,7 +56,7 @@ public class SalesMgr {
 	}
 
 	/**
-	 * Search list. <---- Not required anymore since we're using Hash Map?
+	 * Search list.
 	 *
 	 * @param menuitem the menuitem
 	 * @param dateTime the date time
