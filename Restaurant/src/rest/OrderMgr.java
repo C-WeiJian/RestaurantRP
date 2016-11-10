@@ -315,6 +315,19 @@ public class OrderMgr {
 		saveOrder();
 	}
 
+	
+	/**
+	 * Allows an order with four random items of random quantity to be generated
+	 * 
+	 * @param item1 the MenuItem
+	 * @param item2 the MenuItem
+	 * @param item3 the MenuItem
+	 * @param item4 the MenuItem
+	 * @param i an integer
+	 * 
+	 * @return the order
+	 * 
+	 */
 	public Order quicksetOrder(MenuItem item1, MenuItem item2, MenuItem item3, MenuItem item4, int i) {
 		Order temp = new Order(i, staffList.get(2), 30, LocalDateTime.parse("2016-01-01 12:00", formatter).withDayOfYear(i));
 		temp.addMenuItem(item1, (int) (10 * Math.random() + 1));

@@ -405,7 +405,7 @@ public class ReservationMgr {
 		int tableId = checkAvailability(2, now, AM, temptablelist);
 		long i = 1;
 		while (tableId!=-1){
-			resList.add(new Reservation(2, now.format(formatter), AM, tableId, i));
+			resList.add(new Reservation(2, now.format(formatter), AM, tableId, 123));
 			i++;
 			tableId = checkAvailability(2, now, AM, temptablelist);
 		}

@@ -127,9 +127,10 @@ public class SalesMgr {
 		System.out.println("-----------------------------------------------");
 		System.out.printf("%s: %-25s %4s %2s\n", "ID", "Name:", "Quantity:", "Price:");
 		for (Entry<MenuItem,Integer> e : list.entrySet()) {
+			double subtotal = calculatePrice(e.getKey().getPrice(), e.getValue());
 			System.out.printf("%3s %-26s %-9d %.2f\n\n", e.getKey().getId(), e.getKey().getName(),
-					e.getValue(),e.getKey().getPrice()*e.getValue());
-			totalEarnings = totalEarnings + e.getKey().getPrice()*e.getValue();
+					e.getValue(),subtotal);
+			totalEarnings = totalEarnings + subtotal;
 		}
 		System.out.println("===============================================");
 		System.out.printf("Subtotal: %29s %.2f\n", " ", totalEarnings);
@@ -138,6 +139,19 @@ public class SalesMgr {
 		System.out.printf("Total Sales: %26s %.2f\n", " ", totalEarnings*1.177);
 		System.out.println("===============================================");
 		
+	}
+	
+	
+	/**
+	 * Calculate Price
+	 * This is done by multiplying the two inputs it receives
+	 * 
+	 * @param price the price
+	 * @param quantity the quantity
+	 * @return the subtotal price
+	 */
+	public double calculatePrice(double price, int quantity){
+		return price*quantity;
 	}
 	
 	/**

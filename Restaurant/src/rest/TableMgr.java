@@ -98,6 +98,7 @@ public class TableMgr {
 	 */
 	public void showTable() {
 		System.out.print("TableId\t\tCapacity\tStatus\n");
+		System.out.println("---------------------------------------");
 		for (Table n : tableList) {
 			System.out.print("Table" + n.getTableId() + "\t\t" + n.getCapacity() + " pax");
 			if (n.getStatus() == 1)

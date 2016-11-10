@@ -2,7 +2,6 @@
 
 package rest;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,37 +16,39 @@ public class RestaurantApp {
 
 	/** The menu. */
 	public static Menu menu = new Menu();
-	
+
 	/** The order manager. */
 	public static OrderMgr orderMgr = new OrderMgr();
-	
+
 	/** The table manager. */
 	public static TableMgr tableMgr = new TableMgr();
-	
+
 	/** The reservation manager. */
 	public static ReservationMgr resMgr = new ReservationMgr();
-	
+
 	/** The sales manager. */
 	public static SalesMgr salesMgr = new SalesMgr();
-	
+
 	/** The user's choice. */
 	static int choice = -1;
-	
-	/** The user's second choice. 
-	 * Used in the case of double nested do-while loop
+
+	/**
+	 * The user's second choice. Used in the case of double nested do-while loop
 	 */
 	static int choice2 = -1;
-	
+
 	/** The User's string inputs. */
 	static String input;
-	
+
 	/** The scanner. */
 	static Scanner sc = new Scanner(System.in);
 
 	/**
-	 * The main method.
-	 * Updates the corresponding function to the latest version whenever that function is called 
-	 * @param args the arguments
+	 * The main method. Updates the corresponding function to the latest version
+	 * whenever that function is called
+	 * 
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 		// Initialize menu
@@ -107,7 +108,8 @@ public class RestaurantApp {
 				break;
 			case 8:
 				editReservation();
-				// updateRes() is called within checkReservation() and removeReservation() in ReservationMgr
+				// updateRes() is called within checkReservation() and
+				// removeReservation() in ReservationMgr
 				updateTables();
 				break;
 			case 9:
@@ -219,38 +221,42 @@ public class RestaurantApp {
 	}
 
 	/**
-	 * Creates the order.
-	 * Checks whether the customer is a 'walk-in' customer or someone who already has a reservation
+	 * Creates the order. Checks whether the customer is a 'walk-in' customer or
+	 * someone who already has a reservation
 	 */
 	public static void createOrder() {
-		
+
 		System.out.println("Do you have a reservation? (1: yes, 2: no) ");
-		
+
 		int yesno;
-		int tableId = -1;
+		int tableId;
+		boolean check;
 		yesno = sc.nextInt();
 		if (yesno == 1) {
-			tableId = resMgr.activateReservation();
+			resMgr.activateReservation();
 		}
-		
+
 		resMgr.updateRes();
 		updateTables();
-		if (tableId == -1) {
-			System.out.print("Enter Pax: ");
-			int temppax = sc.nextInt();
-			tableId = tableMgr.nextAvailableTable(temppax);
-		}
+
+		System.out.print("Enter Pax: ");
+		int temppax = sc.nextInt();
+		tableId = tableMgr.nextAvailableTable(temppax);
+	
 		if (tableId == -1)
 			System.out.println("No Table Available\nNo order created.");
 		else {
+			do{
 			System.out.print("Enter OrderId: ");
 			int temporderId = sc.nextInt();
-			System.out.print("Enter Staff Id: ");
+			System.out.print("Enter Staff Id[1-5]: ");
 			int staffid = sc.nextInt();
-			boolean check = orderMgr.createOrder(temporderId, staffid, tableId);
-				if(check) System.out.println("Order Created!\nOrder " + temporderId + " is assigned to Table " + tableId);
-			}
+			check = orderMgr.createOrder(temporderId, staffid, tableId);
+			if (check)
+				System.out.println("Order Created!\nOrder " + temporderId + " is assigned to Table " + tableId);
+			} while (!check);
 		}
+	}
 
 	/**
 	 * Gets the order.
@@ -361,8 +367,10 @@ public class RestaurantApp {
 					break;
 				case 3:
 					orderMgr.removeOrder(order);
-/*					int temp2 = order.getTableId(); //consider removing
-					tableMgr.updateTable(temp2, 1);*/
+					/*
+					 * int temp2 = order.getTableId(); //consider removing
+					 * tableMgr.updateTable(temp2, 1);
+					 */
 					break;
 				case 4:
 					System.out.println("Please Wait...");
@@ -373,7 +381,7 @@ public class RestaurantApp {
 			} while (choice != 4);
 		}
 	}
-	
+
 	/**
 	 * Edits the reservation.
 	 */
@@ -385,10 +393,10 @@ public class RestaurantApp {
 			System.out.println("2: Remove reservation");
 			System.out.println("3: Back");
 			System.out.println("--------------------------");
-			
+
 			choice = sc.nextInt();
-			
-			switch(choice) {
+
+			switch (choice) {
 			case 1:
 				resMgr.checkReservation();
 				break;
@@ -398,7 +406,7 @@ public class RestaurantApp {
 			case 3:
 				break;
 			}
-		} while (choice !=3);
+		} while (choice != 3);
 	}
 
 	/**
@@ -422,10 +430,13 @@ public class RestaurantApp {
 			choice = sc.nextInt();
 			sc.nextLine();
 
-			/*test cases of full reservation, releasing of table/s upon payment, removing
-			of reservation/s upon ‘period expiry’and generating of bill invoice.
-			maybe one to load multiple completed orders*/
-			
+			/*
+			 * test cases of full reservation, releasing of table/s upon
+			 * payment, removing of reservation/s upon ‘period expiry’and
+			 * generating of bill invoice. maybe one to load multiple completed
+			 * orders
+			 */
+
 			switch (choice) {
 			case 1:
 				tableMgr.presetTable();
@@ -437,6 +448,13 @@ public class RestaurantApp {
 				salesMgr.resetSales();
 				break;
 			case 2:
+				tableMgr.presetTable();
+				orderMgr.presetStaff();
+				orderMgr.resetallOrder();
+				menu.initDefaultMenu();
+				menu.saveMenu();
+				resMgr.resetRes();
+				salesMgr.resetSales();
 				resMgr.initializeFullReservation(tableMgr.getTableList());
 				break;
 			case 3:
@@ -468,7 +486,7 @@ public class RestaurantApp {
 	 */
 	public static void updateTables() {
 		ArrayList<Integer> temp1 = resMgr.getUnavailableTables(); // get tableId
-		ArrayList<Integer[]> temp2 = orderMgr.getUnavailableTables(); 
+		ArrayList<Integer[]> temp2 = orderMgr.getUnavailableTables();
 		tableMgr.fullUpdate(temp1, temp2);
 	}
 
@@ -483,31 +501,45 @@ public class RestaurantApp {
 		String end = sc.nextLine().substring(0, 10) + " 23:59";
 		salesMgr.printSales(start, end);
 	}
-	
+
 	/**
-	 * Preset orders.
+	 * Preset orders. This executes the full reset and generate information
+	 * needed for test cases. This generates random sales information. The first
+	 * loop adds sends in random order information across the year into
+	 * saleslist. This also generates active orders from table 1-29. With random
+	 * order items loaded.
 	 */
 	public static void presetOrders() {
 		MenuItem item1, item2, item3, item4;
-		for (int i = 1; i<300; i++){
-			item1 = menu.getMenuItem("M0" +  (int) (5 * Math.random() + 1));
-			item2 = menu.getMenuItem("D0" +  (int) (3 * Math.random() + 1));
-			item3 = menu.getMenuItem("P0" +  (int) (3 * Math.random() + 1));
-			item4 = menu.getMenuItem("B0" +  (int) (5 * Math.random() + 1));
+
+		tableMgr.presetTable();
+		orderMgr.presetStaff();
+		orderMgr.resetallOrder();
+		menu.initDefaultMenu();
+		menu.saveMenu();
+		resMgr.resetRes();
+		salesMgr.resetSales();
+
+		for (int i = 1; i < 300; i++) {
+			item1 = menu.getMenuItem("M0" + (int) (5 * Math.random() + 1));
+			item2 = menu.getMenuItem("D0" + (int) (3 * Math.random() + 1));
+			item3 = menu.getMenuItem("P0" + (int) (3 * Math.random() + 1));
+			item4 = menu.getMenuItem("B0" + (int) (5 * Math.random() + 1));
 			salesMgr.updateSales(orderMgr.quicksetOrder(item1, item2, item3, item4, i));
 		}
-		for (int i = 1; i<30; i++){
-			item1 = menu.getMenuItem("M0" +  (int) (5 * Math.random() + 1));
-			item2 = menu.getMenuItem("D0" +  (int) (3 * Math.random() + 1));
-			item3 = menu.getMenuItem("P0" +  (int) (3 * Math.random() + 1));
-			item4 = menu.getMenuItem("B0" +  (int) (5 * Math.random() + 1));
+		for (int i = 1; i < 30; i++) {
+			item1 = menu.getMenuItem("M0" + (int) (5 * Math.random() + 1));
+			item2 = menu.getMenuItem("D0" + (int) (3 * Math.random() + 1));
+			item3 = menu.getMenuItem("P0" + (int) (3 * Math.random() + 1));
+			item4 = menu.getMenuItem("B0" + (int) (5 * Math.random() + 1));
 			boolean check = orderMgr.createOrder(i, 3, i);
-			if(!check) System.out.println("Error - cannot create");
+			if (!check)
+				System.out.println("Error - cannot create");
 			orderMgr.getOrder(i).addMenuItem(item1, (int) (10 * Math.random() + 1));
 			orderMgr.getOrder(i).addMenuItem(item2, (int) (10 * Math.random() + 1));
 			orderMgr.getOrder(i).addMenuItem(item3, (int) (10 * Math.random() + 1));
 			orderMgr.getOrder(i).addMenuItem(item4, (int) (10 * Math.random() + 1));
 		}
 	}
-	
+
 }
