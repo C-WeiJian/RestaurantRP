@@ -9,15 +9,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+/**
+ * The Manager class for the SalesLineItem
+ * @version 1.0
+ * @since 2016-10-28
+ */
 public class SalesMgr {
 
+	/** The sales list. */
 	private List<SalesLineItem> salesList = new ArrayList<SalesLineItem>();
+	
+	/** The Date and Time formatter. */
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+	/**
+	 * Instantiates a new sales manager.
+	 */
 	public SalesMgr() {
 		loadSales();
 	}
 
+	/**
+	 * Loads the list of sales made from saved file.
+	 */
 	public void loadSales() {
 		List list;
 		salesList = new ArrayList<SalesLineItem>();
@@ -34,10 +48,20 @@ public class SalesMgr {
 		}
 	}
 
+	/**
+	 * Save the list of sales made.
+	 */
 	public void saveSales() {
 		SerializeDB.writeSerializedObject("saleslist.dat", salesList);
 	}
 
+	/**
+	 * Search list. <---- Not required anymore since we're using Hash Map?
+	 *
+	 * @param menuitem the menuitem
+	 * @param dateTime the date time
+	 * @return the int
+	 */
 	public int searchList(MenuItem menuitem, LocalDateTime dateTime) {
 		Iterator<SalesLineItem> al = salesList.listIterator();
 		while (al.hasNext()) {
@@ -49,6 +73,11 @@ public class SalesMgr {
 		return -1;
 	}
 
+	/**
+	 * Update sales when an Order Invoice is completed.
+	 *
+	 * @param order the order
+	 */
 	public void updateSales(Order order) {
 		LocalDateTime dateTime = order.getdateTime().truncatedTo(ChronoUnit.DAYS);
 		for (OrderLineItem o : order.getOrders()) {
@@ -64,6 +93,13 @@ public class SalesMgr {
 		saveSales();
 	}
 
+	/**
+	 * Prints the sales made within a specified period.
+	 * the time period is defined by the user
+	 *
+	 * @param startstr the beginning of the time period
+	 * @param endstr the ending of the time period
+	 */
 	public void printSales(String startstr, String endstr) {
 
 		LocalDateTime start = LocalDateTime.parse(startstr, formatter);
@@ -82,11 +118,7 @@ public class SalesMgr {
 				}
 			}
 		}
-		// Print TempList
-		if(tempList.isEmpty())
-			System.out.println("I'm Sad and Empty :(");
-		else
-			System.out.println("I'm not Empty :)");
+		// Print list of sales made in the specified time period
 		System.out.println("===============================================");
 		System.out.printf("%12s\n","Sales Report");
 		System.out.println("-----------------------------------------------");
@@ -108,6 +140,10 @@ public class SalesMgr {
 		
 	}
 	
+	/**
+	 * Reset sales.
+	 * Creates a new SalesLineItem list
+	 */
 	public void resetSales(){
 		salesList = new ArrayList<SalesLineItem>();
 		saveSales();

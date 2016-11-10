@@ -9,11 +9,23 @@ import java.util.Set;
 import javax.sound.midi.VoiceStatus;
 
 
+/**
+ * The Menu Class
+ * 
+ * @version 1.0
+ * @since 2016-10-28
+ */
 public class Menu {
+	
+	/** The section. */
 	private char section;
+	
+	/** The menu, which is a list of MenuItems. */
 	private static List<MenuItem> menu = new ArrayList<MenuItem>();
 
-	//Loads menu from menu.dat file
+	/**
+	 * Load menu from the menu.dat file.
+	 */
 	public void loadMenu(){
 		List list;
 		menu = new ArrayList<MenuItem>();
@@ -35,12 +47,16 @@ public class Menu {
 		}
 	}
 	
-	//writes current menu to menu.dat
+	/**
+	 * Save current menu to menu.dat.
+	 */
 	public void saveMenu(){
 		SerializeDB.writeSerializedObject("menu.dat", menu);
 	}
 	
-	//prints menu split by type
+	/**
+	 * Prints menu according to type.
+	 */
 	public void showMenu(){
 		int promo = 1, main = 1, beverage = 1, desert = 1;
 		System.out.println("---------------------------------------");		
@@ -103,7 +119,9 @@ public class Menu {
 	
 	
 	
-	//Creates a new menu item and adds it to the menu
+	/**
+	 * Creates a new menu item and adds it to the menu.
+	 */
 	public void createMenuItem(){
 		Scanner sc = new Scanner(System.in);
 		String name, description, type, id;
@@ -125,7 +143,9 @@ public class Menu {
 		menu.add(tempMItem);
 	}
 	
-	//Allows users to update a certain menu item
+	/**
+	 * Allows users to update a certain menu item.
+	 */
 	public void updateMenuItem(){
 		String input = "", temp;
 		int choice = -1, current = 0, previous;
@@ -201,6 +221,9 @@ public class Menu {
 		}	
 	}
 	
+	/**
+	 * Update PromoItem.
+	 */
 	public void updatePromoItem(){
 		String input = "", temp = "";
 		int choice = -1, choice2 = -1, current = 0, previous;
@@ -269,14 +292,12 @@ public class Menu {
 						break;
 					case 6:
 						do{
-							//PromoPackage tempPromo = (PromoPackage) getMenuItem(input);
 							System.out.println("1. Add new item");
 							System.out.println("2. Remove item");
 							System.out.println("3. Back");
 							choice2 = sc.nextInt();
 							switch(choice2) {
 							case 1: 
-								//tempPromo.addItem(this);
 								((PromoPackage) m).addItem(this);
 								break;
 							case 2:
@@ -301,6 +322,11 @@ public class Menu {
 		}	
 	}
 	
+	/**
+	 * Removes a menu item.
+	 *
+	 * @param name the name
+	 */
 	public void removeMenuItem(String name){
 		MenuItem temp = getMenuItem(name);
 		if (temp != null){
@@ -311,6 +337,9 @@ public class Menu {
 			System.out.println("Item does not exist");
 	}
 	
+	/**
+	 * Creates a PromoItem.
+	 */
 	public void createPromo(){
 		Scanner sc = new Scanner(System.in);
 		String name, description, id;
@@ -346,6 +375,13 @@ public class Menu {
 		}while (choice != 2);	
 		menu.add(tempMPromo);
 	}
+	
+	/**
+	 * Gets the menu item.
+	 *
+	 * @param name the name
+	 * @return the menu item
+	 */
 	public MenuItem getMenuItem(String name){
 		for (MenuItem m : menu){
 			if (m.getName().equals(name) || m.getId().equals(name.toUpperCase())){
@@ -355,11 +391,23 @@ public class Menu {
 		return null;
 	}
 	
+	/**
+	 * Check if a MenuItem has the same name or ID 
+	 * as an existing MenuItem.
+	 *
+	 * @param tempMItem the MenuItem to check
+	 */
 	public void check(MenuItem tempMItem) {
 		checkName(tempMItem);
 		checkID(tempMItem);
 	}
 	
+	/**
+	 * Check if a MenuItem has the same name
+	 * as an existing MenuItem.
+	 *
+	 * @param tempMItem the MenuItem to check
+	 */
 	public void checkName(MenuItem tempMItem) {
 		int current = 0, previous;
 		Scanner sc = new Scanner(System.in);
@@ -375,6 +423,12 @@ public class Menu {
 		} while (previous != current);
 	}
 	
+	/**
+	 * Check if a MenuItem has the same ID
+	 * as an existing MenuItem.
+	 *
+	 * @param tempMItem the MenuItem to check
+	 */
 	public void checkID(MenuItem tempMItem) {
 		int current = 0, previous;
 		Scanner sc = new Scanner(System.in);
@@ -390,6 +444,9 @@ public class Menu {
 		} while (previous != current);
 	}
 	
+	/**
+	 * Show the ala carte menu.
+	 */
 	public void showAlaCarte() {
 		System.out.println("Ala Carte Menu:");
 		System.out.println("---------------");
@@ -401,6 +458,9 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * Show the promo menu.
+	 */
 	public void showPromo() {
 		System.out.println("Promotion Menu:");
 		System.out.println("---------------");
@@ -412,19 +472,35 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * Show simplified menu with MenuItem names and IDs.
+	 */
 	public void showSimpleMenu() {
 		showPromo();
 		showAlaCarte();
 	}
 
+	/**
+	 * Gets the current menu.
+	 *
+	 * @return the menu
+	 */
 	public List<MenuItem> getMenu() {
 		return menu;
 	}
 
+	/**
+	 * Sets the menu.
+	 *
+	 * @param menu the new menu
+	 */
 	public void setMenu(List<MenuItem> menu) {
 		Menu.menu = menu;
 	}
 	
+	/**
+	 * Initializes the default menu.
+	 */
 	public void initDefaultMenu() {
 		menu = new ArrayList<MenuItem>();
 		

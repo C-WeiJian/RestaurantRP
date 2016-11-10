@@ -2,21 +2,53 @@
 
 package rest;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// TODO: Auto-generated Javadoc
+/**
+ * This is main code for the Restaurant Application.
+ *
+ * @version 1.0
+ * @since 2016-10-28
+ */
 public class RestaurantApp {
 
+	/** The menu. */
 	public static Menu menu = new Menu();
+	
+	/** The order manager. */
 	public static OrderMgr orderMgr = new OrderMgr();
+	
+	/** The table manager. */
 	public static TableMgr tableMgr = new TableMgr();
+	
+	/** The reservation manager. */
 	public static ReservationMgr resMgr = new ReservationMgr();
+	
+	/** The sales manager. */
 	public static SalesMgr salesMgr = new SalesMgr();
+	
+	/** The user's choice. */
 	static int choice = -1;
+	
+	/** The user's second choice. 
+	 * Used in the case of double nested do-while loop
+	 */
 	static int choice2 = -1;
+	
+	/** The User's string inputs. */
 	static String input;
+	
+	/** The scanner. */
 	static Scanner sc = new Scanner(System.in);
 
+	/**
+	 * The main method.
+	 * Updates the corresponding function to the latest version whenever that function is called 
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		// Initialize menu
 		menu.loadMenu();
@@ -69,7 +101,7 @@ public class RestaurantApp {
 				editOrder();
 				break;
 			case 7:
-				resMgr.addReservation();
+				resMgr.addReservation(tableMgr.getTableList());
 				// updateRes() is called within addReservation()
 				updateTables();
 				break;
@@ -86,6 +118,7 @@ public class RestaurantApp {
 			case 10:
 				sc.nextLine();
 				printInvoice();
+				updateTables();
 				break;
 			case 11:
 				sc.nextLine();
@@ -103,6 +136,9 @@ public class RestaurantApp {
 
 	}
 
+	/**
+	 * Brings up the menu to edit the menu items.
+	 */
 	public static void editMenuItem() {
 		int choice2;
 		System.out.println("");
@@ -141,6 +177,9 @@ public class RestaurantApp {
 
 	}
 
+	/**
+	 * Brings up the menu to edit the promo items.
+	 */
 	public static void editPromo() {
 		int choice;
 		System.out.println("");
@@ -179,25 +218,45 @@ public class RestaurantApp {
 
 	}
 
+	/**
+	 * Creates the order.
+	 * Checks whether the customer is a 'walk-in' customer or someone who already has a reservation
+	 */
 	public static void createOrder() {
+		
+		System.out.println("Do you have a reservation? (1: yes, 2: no) ");
+		
+		int yesno;
+		int tableId = -1;
+		yesno = sc.nextInt();
+		if (yesno == 1) {
+			tableId = resMgr.activateReservation();
+		}
+		
 		resMgr.updateRes();
-		System.out.print("Enter OrderId: ");
-		int temporderId = sc.nextInt();
-		System.out.print("Enter Pax: ");
-		int temppax = sc.nextInt();
-		int temptableid = tableMgr.assignTable(temporderId, temppax);
-		if (temptableid == -1)
+		updateTables();
+		if (tableId == -1) {
+			System.out.print("Enter Pax: ");
+			int temppax = sc.nextInt();
+			tableId = tableMgr.nextAvailableTable(temppax);
+		}
+		if (tableId == -1)
 			System.out.println("No Table Available\nNo order created.");
 		else {
+			System.out.print("Enter OrderId: ");
+			int temporderId = sc.nextInt();
 			System.out.print("Enter Staff Id: ");
 			int staffid = sc.nextInt();
-			boolean check = orderMgr.createOrder(temporderId, staffid, temptableid);
-			if (check == true)
-				System.out.println("Order Created!\nOrder " + temporderId + " is assigned to Table " + temptableid);
-			else tableMgr.updateTable(temptableid, true);
+			boolean check = orderMgr.createOrder(temporderId, staffid, tableId);
+				if(check) System.out.println("Order Created!\nOrder " + temporderId + " is assigned to Table " + tableId);
+			}
 		}
-	}
 
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
 	public static Order getOrder() {
 		int choice;
 		Order temporder = null;
@@ -232,6 +291,9 @@ public class RestaurantApp {
 
 	}
 
+	/**
+	 * View order.
+	 */
 	public static void viewOrder() {
 		Order order = getOrder();
 		if (order == null)
@@ -240,17 +302,22 @@ public class RestaurantApp {
 			orderMgr.print(order);
 	}
 
+	/**
+	 * Prints the invoice.
+	 */
 	public static void printInvoice() {
 		Order order = getOrder();
 		if (order != null) {
 			int temp = order.getTableId();
 			salesMgr.updateSales(order);
 			orderMgr.printInvoice(order);
-			tableMgr.updateTable(temp, true);
 		}
 
 	}
 
+	/**
+	 * Edits the order.
+	 */
 	public static void editOrder() {
 		int choice, qty;
 		MenuItem temp;
@@ -261,6 +328,8 @@ public class RestaurantApp {
 			System.out.println("No Info to Show.");
 		else {
 			do {
+				System.out.println("--------------------------");
+				System.out.println("You are currently editing Order " + order.getOrderId());
 				System.out.println("--------------------------");
 				System.out.println("1. Add item to order");
 				System.out.println("2. Remove item from order");
@@ -292,8 +361,8 @@ public class RestaurantApp {
 					break;
 				case 3:
 					orderMgr.removeOrder(order);
-					int temp2 = order.getTableId();
-					tableMgr.updateTable(temp2, true);
+/*					int temp2 = order.getTableId(); //consider removing
+					tableMgr.updateTable(temp2, 1);*/
 					break;
 				case 4:
 					System.out.println("Please Wait...");
@@ -305,6 +374,9 @@ public class RestaurantApp {
 		}
 	}
 	
+	/**
+	 * Edits the reservation.
+	 */
 	public static void editReservation() {
 		int choice;
 		do {
@@ -329,17 +401,21 @@ public class RestaurantApp {
 		} while (choice !=3);
 	}
 
+	/**
+	 * Admin menu functions.
+	 */
 	public static void admin() {
 		int choice;
 		do {
 			System.out.println("--------------------------");
 			System.out.println("For Setup Purposes");
-			System.out.println("1. Full Preset");
+			System.out.println("1. Full Reset");
 			System.out.println("2. Test Case - Full Reservation");
 			System.out.println("3. Test Case - Load Multiple Completed and Active Orders");
 			System.out.println("4. Preset Default Menu");
 			System.out.println("5. Preset Default Tables of 30 ");
 			System.out.println("6. Add a Single Table");
+			System.out.println("7. See All Reservations");
 			System.out.println("10. Back");
 			System.out.println("--------------------------");
 			System.out.print("Enter choice: ");
@@ -360,6 +436,12 @@ public class RestaurantApp {
 				resMgr.resetRes();
 				salesMgr.resetSales();
 				break;
+			case 2:
+				resMgr.initializeFullReservation(tableMgr.getTableList());
+				break;
+			case 3:
+				presetOrders();
+				break;
 			case 4:
 				menu.initDefaultMenu();
 				menu.saveMenu();
@@ -370,17 +452,29 @@ public class RestaurantApp {
 			case 6:
 				tableMgr.addTable();
 				break;
+			case 7:
+				resMgr.printAllReservations();
+				break;
+			case 8:
+				orderMgr.resetallOrder();
 			case 10:
 				break;
 			}
 		} while (choice != 10);
 	}
 
+	/**
+	 * Update tables.
+	 */
 	public static void updateTables() {
-		ArrayList<Integer> temp = resMgr.getUnavailableTables(); // get tableId
-		tableMgr.updateRes(temp);
+		ArrayList<Integer> temp1 = resMgr.getUnavailableTables(); // get tableId
+		ArrayList<Integer[]> temp2 = orderMgr.getUnavailableTables(); 
+		tableMgr.fullUpdate(temp1, temp2);
 	}
 
+	/**
+	 * Prints the sales.
+	 */
 	public static void printSales() {
 
 		System.out.print("Please enter start date (yyyy-MM-dd): ");
@@ -390,5 +484,30 @@ public class RestaurantApp {
 		salesMgr.printSales(start, end);
 	}
 	
-
+	/**
+	 * Preset orders.
+	 */
+	public static void presetOrders() {
+		MenuItem item1, item2, item3, item4;
+		for (int i = 1; i<300; i++){
+			item1 = menu.getMenuItem("M0" +  (int) (5 * Math.random() + 1));
+			item2 = menu.getMenuItem("D0" +  (int) (3 * Math.random() + 1));
+			item3 = menu.getMenuItem("P0" +  (int) (3 * Math.random() + 1));
+			item4 = menu.getMenuItem("B0" +  (int) (5 * Math.random() + 1));
+			salesMgr.updateSales(orderMgr.quicksetOrder(item1, item2, item3, item4, i));
+		}
+		for (int i = 1; i<30; i++){
+			item1 = menu.getMenuItem("M0" +  (int) (5 * Math.random() + 1));
+			item2 = menu.getMenuItem("D0" +  (int) (3 * Math.random() + 1));
+			item3 = menu.getMenuItem("P0" +  (int) (3 * Math.random() + 1));
+			item4 = menu.getMenuItem("B0" +  (int) (5 * Math.random() + 1));
+			boolean check = orderMgr.createOrder(i, 3, i);
+			if(!check) System.out.println("Error - cannot create");
+			orderMgr.getOrder(i).addMenuItem(item1, (int) (10 * Math.random() + 1));
+			orderMgr.getOrder(i).addMenuItem(item2, (int) (10 * Math.random() + 1));
+			orderMgr.getOrder(i).addMenuItem(item3, (int) (10 * Math.random() + 1));
+			orderMgr.getOrder(i).addMenuItem(item4, (int) (10 * Math.random() + 1));
+		}
+	}
+	
 }

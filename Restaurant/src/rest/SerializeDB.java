@@ -9,10 +9,21 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.ArrayList;
 
+// TODO: Auto-generated Javadoc
 // Note : When structure of the Object type (the class file) in the list changed
+/**
+ * The Class SerializeDB.
+ */
 // the Serialized file may fail.
 public class SerializeDB
 {
+	
+	/**
+	 * Read serialized object.
+	 *
+	 * @param filename the filename
+	 * @return the list
+	 */
 	public static List readSerializedObject(String filename) {
 		List pDetails = null;
 		FileInputStream fis = null;
@@ -33,6 +44,12 @@ public class SerializeDB
 		return pDetails;
 	}
 
+	/**
+	 * Write serialized object.
+	 *
+	 * @param filename the filename
+	 * @param list the list
+	 */
 	public static void writeSerializedObject(String filename, List list) {
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;

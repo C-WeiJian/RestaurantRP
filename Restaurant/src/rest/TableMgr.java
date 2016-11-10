@@ -5,13 +5,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TableMgr.
+ */
 public class TableMgr {
-	private static List<Table> tableList = new ArrayList<Table>();
+	
+	/** The table list. */
+	private static ArrayList<Table> tableList = new ArrayList<Table>();
 
+	/**
+	 * Instantiates a new table manager.
+	 */
 	public TableMgr() {
 		loadTable();
 	}
 
+	/**
+	 * Loads latest version of tableList from DB.
+	 */
 	private void loadTable() {
 		List list;
 		tableList = new ArrayList<Table>();
@@ -26,57 +38,53 @@ public class TableMgr {
 		}
 	}
 
+	/**
+	 * Save current version of tableList into DB.
+	 */
 	private void saveTable() {
 		SerializeDB.writeSerializedObject("tablelist.dat", tableList);
 	}
 
+	/**
+	 * Preset tables.
+	 */
 	public void presetTable() {
 		tableList = new ArrayList<Table>();
 		for (int i = 0; i < 10; i++) {
-			tableList.add(new Table(i + 1, 2, true));
+			tableList.add(new Table(i + 1, 2, 1));
 		}
 		for (int i = 0; i < 10; i++) {
-			tableList.add(new Table(i + 11, 4, true));
+			tableList.add(new Table(i + 11, 4, 1));
 		}
 		for (int i = 0; i < 5; i++) {
-			tableList.add(new Table(i + 21, 8, true));
+			tableList.add(new Table(i + 21, 8, 1));
 		}
 		for (int i = 0; i < 5; i++) {
-			tableList.add(new Table(i + 26, 10, true));
+			tableList.add(new Table(i + 26, 10, 1));
 		}
 		saveTable();
 	}
 
+	/** The scaner. */
 	Scanner in = new Scanner(System.in);
 
-	// This is the only function you need to call in main app
-	// public void checkAvailability() {
-	// System.out.println("Please enter table Id:");
-	// int tableId = in.nextInt();
-	// int index = searchList(tableId);
-	// Table result = tableList.get(index);
-	// if (result.getStatus()) {
-	// System.out.println("Table " + tableId + "is available for " +
-	// result.getCapacity());
-	// } else
-	// System.out.println("Table " + tableId + "is not available");
-	// }
-	// addTable and removeTable are used for 'admin' purposes when setting up
-	// the restaurant
-
+	/**
+	 * Adds the table.
+	 */
 	public void addTable() {
 		System.out.println("Please enter table Id:");
 		int tableId = in.nextInt();
 		System.out.println("Please enter table capacity:");
 		int capacity = in.nextInt();
-		// System.out.println("Please enter table status:");
-		// boolean status = in.nextBoolean();
-		Table newTable = new Table(tableId, capacity, true);
+		Table newTable = new Table(tableId, capacity, 1);
 		tableList.add(newTable);
 		System.out.println("Table successfully added!");
 		saveTable();
 	}
 
+	/**
+	 * Removes the table.
+	 */
 	public void removeTable() {
 		System.out.println("Please enter tableId:");
 		int index = searchList(in.nextInt());
@@ -85,19 +93,31 @@ public class TableMgr {
 		saveTable();
 	}
 
+	/**
+	 * Show table.
+	 */
 	public void showTable() {
 		System.out.print("TableId\t\tCapacity\tStatus\n");
 		for (Table n : tableList) {
 			System.out.print("Table" + n.getTableId() + "\t\t" + n.getCapacity() + " pax");
-			if (n.getStatus())
+			if (n.getStatus() == 1)
 				System.out.print("\t\tAvailable");
+			else if (n.getStatus() == 0)
+				System.out.print("\t\tReserved");
 			else
-				System.out.print("\t\tUnavailable");
+				System.out.print("\t\tOccupied");
 			System.out.println();
 
 		}
 	}
 
+	/**
+	 * Search tableList using tableID.
+	 *
+	 * @param tableId the table id
+	 * @return the index of the desired table in tableList
+	 * @return -1 if table not found
+	 */
 	public int searchList(int tableId) {
 		Iterator<Table> al = tableList.listIterator();
 		while (al.hasNext()) {
@@ -109,48 +129,96 @@ public class TableMgr {
 		return -1;
 	}
 
+	/**
+	 * Searches for next available table in tableList based on number of pax required.
+	 *
+	 * @param Pax the pax
+	 * @return tableId of next available table
+	 * @return -1 if table not found
+	 */
 	public int nextAvailableTable(int Pax) {
 		Iterator<Table> al = tableList.listIterator();
 		while (al.hasNext()) {
 			Table n = al.next();
-			if (n.getStatus() == true && n.getCapacity() >= Pax)
-				return tableList.indexOf(n);
+			if (n.getStatus() == 1 && n.getCapacity() >= Pax)
+				return n.getTableId();
 		}
 		return -1;
 	}
 
-	public List<Table> getTableList() {
+	/**
+	 * Gets the table list.
+	 *
+	 * @return the table list
+	 */
+	public ArrayList<Table> getTableList() {
 		return tableList;
 	}
 
-	public int assignTable(int orderId, int pax) {
-		int temp = nextAvailableTable(pax);
-		if (temp == -1)
-			return -1;
+	/**
+	 * Assign table.
+	 *
+	 * @param orderId the order id
+	 * @param tableId the table id
+	 * @return true, if successful
+	 */
+	public boolean assignTable(int orderId, int tableId) {
+		int temp = searchList(tableId);
 		Table temptable = tableList.get(temp);
-		temptable.setorderId(orderId);
-		temptable.setStatus(false); //can remove
-		saveTable();
-		return temptable.getTableId();
+		if (temptable.getStatus() == 1){
+			temptable.setorderId(orderId);
+			temptable.setStatus(-1); 
+			saveTable();
+			return true;
+		}
+		System.out.println("Error - Table not available");
+		return false;
 	}
 
+	/**
+	 * Gets the table.
+	 *
+	 * @param tableId the table id
+	 * @return the table
+	 */
 	public Table getTable(int tableId) {
 		int index = searchList(tableId);
 		return getTableList().get(index);
 	}
 
-	public void updateTable(int tableId, boolean status) {
-		getTable(tableId).setStatus(status);
-		if(status) getTable(tableId).setorderId(-1);
+	/**
+	 * Update table.
+	 *
+	 * @param tableId the table id
+	 * @param status the status
+	 */
+	public void updateTable(int tableId, int status, int orderId) {
+		Table temp = getTable(tableId);
+		temp.setStatus(status);
+		temp.setorderId(orderId);
 		saveTable();
 	}
 	
-	public void updateRes (ArrayList<Integer> res){
+	
+	/**
+	 * Update overall tableList with the current reservations provided.
+	 * Firstly, it resets tables marked as reserved(status == 0) as available.
+	 * Subsequently, it marks the relevant tables as reserved(status == 0) as per ArrayList res.
+	 *
+	 * @param res List of Integer containing the tableId of reservation for current session
+	 * @param res List of Integer containing the tableId of current orders
+	 */
+	public void fullUpdate (ArrayList<Integer> res, ArrayList<Integer[]> ord){
+		
 		for (Table t: tableList){
-			if(t.getorderId() == -1) t.setStatus(true);
+			t.setStatus(1);
+			t.setorderId(-1);
 		}
 		for (Integer t: res){
-			updateTable(t, false);
+			updateTable(t, 0, -1);
+		}
+		for (Integer[] t: ord){
+			updateTable(t[0], -1, t[1]);
 		}
 	}
 }
