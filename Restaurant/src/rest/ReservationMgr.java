@@ -58,6 +58,8 @@ public class ReservationMgr {
 	
 	/**
 	 * Adds the reservation.
+	 * 
+	 * @param temptablelist the list of tables
 	 */
 	public void addReservation(ArrayList<Table> temptablelist) {
 		updateRes(); //to clear any expired reservations first
@@ -217,8 +219,9 @@ public class ReservationMgr {
 	 * Check availability.
 	 *
 	 * @param pax the pax
-	 * @param t the t
-	 * @param AM the am
+	 * @param t the time
+	 * @param AM the boolean identifying whether it is AM or PM
+	 * @param tempTableList the list of table
 	 * @return the tableID of available table
 	 * -1 if no tables are available
 	 */
@@ -395,6 +398,7 @@ public class ReservationMgr {
 	
 	/**
 	 * Initialize full reservation of tables.
+	 * @param temptablelist the list of tables
 	 */
 	public void initializeFullReservation (ArrayList<Table> temptablelist){
 		boolean AM = false;

@@ -192,6 +192,7 @@ public class TableMgr {
 	 *
 	 * @param tableId the table id
 	 * @param status the status
+	 * @param orderId the orderId
 	 */
 	public void updateTable(int tableId, int status, int orderId) {
 		Table temp = getTable(tableId);
@@ -207,7 +208,7 @@ public class TableMgr {
 	 * Subsequently, it marks the relevant tables as reserved(status == 0) as per ArrayList res.
 	 *
 	 * @param res List of Integer containing the tableId of reservation for current session
-	 * @param res List of Integer containing the tableId of current orders
+	 * @param ord List of Integer containing the tableId and orderid of current orders 
 	 */
 	public void fullUpdate (ArrayList<Integer> res, ArrayList<Integer[]> ord){
 		
