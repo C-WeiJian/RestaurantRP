@@ -109,10 +109,10 @@ public class Reservation implements Serializable {
 	/**
 	 * Sets the session that the reservation is booked for.
 	 * Session can either be AM or PM
-	 * @param aM the new am
+	 * @param AM true indicating AM session
 	 */
-	public void setAM(boolean aM) {
-		AM = aM;
+	public void setAM(boolean AM) {
+		AM = AM;
 	}
 
 	/**
