@@ -3,7 +3,7 @@ package rest;
 import java.io.Serializable;
 
 /**
- * Represents a staff member of REsturant
+ * Represents a staff member of REstaurant
  * @version 1.0
  * @since 2016-10-28
  */
@@ -11,13 +11,13 @@ import java.io.Serializable;
 
 public class Staff implements Serializable {
 
-	/** The job title. */
+	/** The job title of the staff. */
 	private String name, jobTitle;
 	
-	/** The gender. */
+	/** The gender of the staff. */
 	private char gender;
 	
-	/** The staff id. */
+	/** The staff id of the staff. */
 	private int staffId;
 
 	/**

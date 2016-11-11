@@ -2,7 +2,6 @@ package rest;
 
 import java.io.Serializable;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a Table
  */

@@ -159,8 +159,8 @@ public class MenuItem implements Serializable{
 	 * Sets this Menuitem's ID.
 	 * Should be two digits
 	 * i.e. 
-	 * if ID of the MenuItem is one, input 01
-	 * if ID of the MenuItem is 21, input 21
+	 * if ID of the MenuItem is one, input 01.
+	 * if ID of the MenuItem is 21, input 21.
 	 *
 	 * @param id the new id
 	 */

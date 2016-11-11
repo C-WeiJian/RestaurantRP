@@ -9,11 +9,10 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.ArrayList;
 
-// TODO: Auto-generated Javadoc
-// Note : When structure of the Object type (the class file) in the list changed
 /**
- * The Class SerializeDB.
+ * Represents the SerializeDB Class.
  */
+//Note : When structure of the Object type (the class file) in the list changed
 // the Serialized file may fail.
 public class SerializeDB
 {
@@ -64,28 +63,4 @@ public class SerializeDB
 		}
 	}
 
-//	public static void main(String[] args) {
-//		List list;
-//		try	{
-//				// read from serialized file the list of professors
-//				list = (ArrayList)SerializeDB.readSerializedObject("professor.dat");
-//				for (int i = 0 ; i < list.size() ; i++) {
-//					Professor p = (Professor)list.get(i);
-//					System.out.println("name is " + p.getName() );
-//					System.out.println("contact is " + p.getContact() );
-//				}
-//
-//				// write to serialized file - update/insert/delete
-//				// example - add one more professor
-//				Professor p = new Professor("Joseph","jos@ntu.edu.sg",67909999);
-//				// add to list
-//				list.add(p);
-//				// list.remove(p);  // remove if p equals object in the list
-//
-//				SerializeDB.writeSerializedObject("professor.dat", list);
-//
-//		}  catch ( Exception e ) {
-//					System.out.println( "Exception >> " + e.getMessage() );
-//		}
-//	}
 }

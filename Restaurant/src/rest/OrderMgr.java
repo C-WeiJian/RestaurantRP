@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * The Class OrderMgr. Manages all the orders made
+ * Represents the manager class for orders. Manages all the orders made.
  * 
  * @version 1.0
  * @since 2016-10-28

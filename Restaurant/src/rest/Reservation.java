@@ -3,7 +3,7 @@ package rest;
 import java.io.Serializable;
 
 /**
- * The Class Reservation.
+ * Represents a reservation made 
  * @version 1.0
  * @since 2016-10-28
  */

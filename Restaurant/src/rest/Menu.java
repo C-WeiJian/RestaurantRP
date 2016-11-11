@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 
 /**
- * The Menu Class
+ * Represents the menu for REstaurant
  * 
  * @version 1.0
  * @since 2016-10-28

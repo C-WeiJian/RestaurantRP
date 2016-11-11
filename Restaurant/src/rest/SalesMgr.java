@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 /**
- * The Manager class for the SalesLineItem
+ * Represents the Manager class for the SalesLineItem
  * @version 1.0
  * @since 2016-10-28
  */

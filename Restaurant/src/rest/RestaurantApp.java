@@ -5,7 +5,6 @@ package rest;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// TODO: Auto-generated Javadoc
 /**
  * This is main code for the Restaurant Application.
  *
@@ -47,8 +46,7 @@ public class RestaurantApp {
 	 * The main method. Updates the corresponding function to the latest version
 	 * whenever that function is called
 	 * 
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		// Initialize menu
@@ -411,8 +409,8 @@ public class RestaurantApp {
 
 	/**
 	 * Admin menu functions. 
-	 * This is used to automatically set up the required situations and conditions to realise the test cases specified by the assignment.
-	 * This function is also essential in initialising the default settings of the restaurant. 
+	 * This is used to automatically set up the required situations and conditions to realize the test cases specified by the assignment.
+	 * This function is also essential in initializing the default settings of the restaurant. 
 	 */
 	public static void admin() {
 		int choice;

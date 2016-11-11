@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * The Class TableMgr. This class manages and control the tables of the restaurant
+ * Represents the manager class for tables. This class manages and control the tables of the restaurant.
  */
 public class TableMgr {
 	

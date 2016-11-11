@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 
 /**
- * The Class ReservationMgr.
+ * Represents the manager class for reservations
  * Contains the list of reservations and handles any adding, removing, updating, activating of reservations
  * @version 1.0
  * @since 2016-10-28

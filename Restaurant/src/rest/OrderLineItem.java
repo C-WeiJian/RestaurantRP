@@ -3,7 +3,7 @@ package rest;
 import java.io.Serializable;
 
 /**
- * The Class OrderLineItem.
+ * Represents an order line item
  * To calculate the total quantity of a MenuItem in a single order
  * @version 1.0
  * @since 2016-10-28
